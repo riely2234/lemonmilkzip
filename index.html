@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Java2Bedrock</title>
+<title>Java2Bedrock – Mod Converter</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -16,11 +16,27 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,san
 ::-webkit-scrollbar{width:6px;}
 ::-webkit-scrollbar-track{background:var(--bg2);}
 ::-webkit-scrollbar-thumb{background:var(--purple);border-radius:3px;}
-nav{background:linear-gradient(90deg,var(--bg2),var(--bg3));border-bottom:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.logo{font-size:1.5rem;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.nav-badge{background:linear-gradient(135deg,var(--purple),var(--cyan));padding:4px 12px;border-radius:20px;font-size:0.75rem;color:#fff;font-weight:700;}
+nav{
+  background:linear-gradient(90deg,var(--bg2),var(--bg3));
+  border-bottom:1px solid var(--border);
+  padding:14px 32px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;
+}
+.logo{
+  font-size:1.5rem;font-weight:900;letter-spacing:2px;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.nav-badge{
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  padding:4px 12px;border-radius:20px;font-size:0.75rem;color:#fff;font-weight:700;
+}
 .hero{text-align:center;padding:40px 24px 20px;position:relative;z-index:1;}
-.hero h1{font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,var(--cyan),var(--purple),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;}
+.hero h1{
+  font-size:2.2rem;font-weight:900;
+  background:linear-gradient(135deg,var(--cyan),var(--purple),var(--green));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;
+}
 .hero p{color:var(--muted);font-size:1rem;max-width:600px;margin:0 auto;}
 .steps{display:flex;justify-content:center;align-items:center;gap:4px;max-width:500px;margin:20px auto;}
 .step{display:flex;align-items:center;gap:6px;padding:6px 12px;font-size:0.82rem;font-weight:700;color:var(--muted);transition:all 0.3s;}
@@ -37,15 +53,28 @@ nav{background:linear-gradient(90deg,var(--bg2),var(--bg3));border-bottom:1px so
 .panel{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
 .panel-header{padding:12px 16px;background:var(--bg3);border-bottom:1px solid var(--border);font-weight:700;font-size:0.88rem;letter-spacing:1px;display:flex;align-items:center;gap:8px;}
 .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.upload-area{border:2px dashed var(--border);border-radius:10px;padding:40px 20px;text-align:center;cursor:pointer;transition:all 0.3s;margin:16px;background:radial-gradient(ellipse at center,rgba(0,245,255,0.03),transparent);}
-.upload-area:hover,.upload-area.dragover{border-color:var(--cyan);background:radial-gradient(ellipse at center,rgba(0,245,255,0.08),transparent);box-shadow:0 0 20px rgba(0,245,255,0.2);}
+.upload-area{
+  border:2px dashed var(--border);border-radius:10px;padding:40px 20px;
+  text-align:center;cursor:pointer;transition:all 0.3s;margin:16px;
+  background:radial-gradient(ellipse at center,rgba(0,245,255,0.03),transparent);
+}
+.upload-area:hover,.upload-area.dragover{
+  border-color:var(--cyan);
+  background:radial-gradient(ellipse at center,rgba(0,245,255,0.08),transparent);
+  box-shadow:0 0 20px rgba(0,245,255,0.2);
+}
 .upload-area input[type=file]{display:none;}
 .upload-icon{font-size:3.5rem;display:block;margin-bottom:12px;}
 .upload-area h3{font-size:1.1rem;margin-bottom:6px;}
 .upload-area p{color:var(--muted);font-size:0.85rem;}
-.upload-btn{margin-top:16px;padding:9px 24px;background:linear-gradient(135deg,var(--cyan),var(--purple));border:none;border-radius:8px;color:#000;font-weight:800;font-size:0.9rem;cursor:pointer;transition:all 0.3s;}
-.upload-btn:hover{transform:translateY(-2px);}
-.file-info{margin-top:12px;padding:10px 14px;background:rgba(0,245,255,0.05);border-radius:8px;border:1px solid rgba(0,245,255,0.2);display:none;text-align:left;font-size:0.83rem;}
+.browse-btn{
+  margin-top:16px;padding:9px 24px;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;border-radius:8px;color:#000;font-weight:800;font-size:0.9rem;
+  cursor:pointer;transition:all 0.3s;display:inline-block;
+}
+.browse-btn:hover{transform:translateY(-2px);}
+.file-info{margin:0 16px 12px;padding:10px 14px;background:rgba(0,245,255,0.05);border-radius:8px;border:1px solid rgba(0,245,255,0.2);display:none;font-size:0.83rem;}
 .file-info.show{display:block;}
 .file-name{color:var(--cyan);font-weight:700;word-break:break-all;}
 .file-size{color:var(--muted);margin-top:2px;}
@@ -56,10 +85,19 @@ nav{background:linear-gradient(90deg,var(--bg2),var(--bg3));border-bottom:1px so
 .progress-fill{height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:width 0.3s ease;}
 .btn-section{padding:0 16px 16px;display:none;}
 .btn-section.show{display:block;}
-.convert-btn{width:100%;padding:14px;font-size:1rem;font-weight:900;background:linear-gradient(135deg,var(--cyan),var(--purple));border:none;border-radius:10px;color:#000;cursor:pointer;letter-spacing:1px;transition:all 0.3s;}
+.convert-btn{
+  width:100%;padding:14px;font-size:1rem;font-weight:900;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;border-radius:10px;color:#000;cursor:pointer;letter-spacing:1px;transition:all 0.3s;
+}
 .convert-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,245,255,0.4);}
-.convert-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.download-btn{width:100%;padding:14px;font-size:1rem;font-weight:900;background:linear-gradient(135deg,var(--green),#00cc66);border:none;border-radius:10px;color:#000;cursor:pointer;letter-spacing:1px;transition:all 0.3s;animation:pglow 2s infinite;}
+.convert-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.download-btn{
+  width:100%;padding:14px;font-size:1rem;font-weight:900;
+  background:linear-gradient(135deg,var(--green),#00cc66);
+  border:none;border-radius:10px;color:#000;cursor:pointer;letter-spacing:1px;
+  transition:all 0.3s;animation:pglow 2s infinite;
+}
 .download-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,255,136,0.5);}
 .download-btn:disabled{opacity:0.5;cursor:not-allowed;animation:none;}
 @keyframes pglow{0%,100%{box-shadow:0 0 10px rgba(0,255,136,0.3);}50%{box-shadow:0 0 25px rgba(0,255,136,0.7);}}
@@ -76,16 +114,17 @@ nav{background:linear-gradient(90deg,var(--bg2),var(--bg3));border-bottom:1px so
 .log-warn{color:var(--yellow);}
 .log-err{color:var(--red);}
 .log-dim{color:var(--muted);}
-.log-head{color:var(--purple);font-weight:700;margin-top:6px;}
+.log-head{color:var(--purple);font-weight:700;margin-top:4px;}
 .options{padding:12px;}
 .opt-group{margin-bottom:12px;}
 .opt-label{font-size:0.75rem;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
 .opt-row{display:flex;align-items:center;justify-content:space-between;padding:7px 9px;background:var(--bg3);border-radius:6px;margin-bottom:3px;font-size:0.81rem;border:1px solid var(--border);}
-.toggle{width:34px;height:18px;background:var(--border);border-radius:9px;cursor:pointer;position:relative;transition:all 0.3s;border:none;outline:none;}
+.toggle{width:34px;height:18px;background:var(--border);border-radius:9px;cursor:pointer;position:relative;transition:all 0.3s;border:none;outline:none;flex-shrink:0;}
 .toggle.on{background:var(--cyan);}
 .toggle::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:all 0.3s;}
 .toggle.on::after{left:18px;}
 select,input[type=text]{background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:4px 7px;font-size:0.78rem;outline:none;}
+select:focus,input[type=text]:focus{border-color:var(--cyan);}
 .alert-box{margin:0 16px 12px;padding:10px 14px;border-radius:8px;font-size:0.83rem;display:none;align-items:center;gap:8px;}
 .alert-box.show{display:flex;}
 .alert-box.success{background:rgba(0,255,136,0.08);border:1px solid var(--green);color:var(--green);}
@@ -98,8 +137,12 @@ select,input[type=text]{background:var(--bg3);color:var(--text);border:1px solid
 .tree-area{padding:10px;font-family:'Courier New',monospace;font-size:0.73rem;max-height:260px;overflow-y:auto;}
 #particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;}
 .particle{position:absolute;border-radius:50%;opacity:0;animation:pfloat linear infinite;}
-@keyframes pfloat{0%{transform:translateY(100vh) translateX(0);opacity:0;}10%{opacity:0.5;}90%{opacity:0.2;}100%{transform:translateY(-20px) translateX(var(--drift));opacity:0;}}
-footer{text-align:center;padding:20px;color:var(--muted);font-size:0.78rem;border-top:1px solid var(--border);}
+@keyframes pfloat{
+  0%{transform:translateY(100vh) translateX(0);opacity:0;}
+  10%{opacity:0.5;}90%{opacity:0.2;}
+  100%{transform:translateY(-20px) translateX(var(--drift));opacity:0;}
+}
+footer{text-align:center;padding:20px;color:var(--muted);font-size:0.78rem;border-top:1px solid var(--border);margin-top:20px;}
 footer a{color:var(--cyan);text-decoration:none;}
 </style>
 </head>
@@ -111,7 +154,7 @@ footer a{color:var(--cyan);text-decoration:none;}
   <div class="logo">⬡ Java2Bedrock</div>
   <div style="display:flex;gap:10px;align-items:center;">
     <span style="color:var(--muted);font-size:0.78rem;">Bedrock 1.21+</span>
-    <div class="nav-badge">v2.2</div>
+    <div class="nav-badge">v2.3</div>
   </div>
 </nav>
 
@@ -141,10 +184,13 @@ footer a{color:var(--cyan);text-decoration:none;}
 
 <div class="main">
 
-  <!-- LEFT PANEL -->
+  <!-- LEFT -->
   <div>
     <div class="panel">
-      <div class="panel-header"><div class="dot" style="background:var(--cyan);box-shadow:0 0 6px var(--cyan);"></div>Detected Content</div>
+      <div class="panel-header">
+        <div class="dot" style="background:var(--cyan);box-shadow:0 0 6px var(--cyan);"></div>
+        Detected Content
+      </div>
       <div class="content-list">
         <div class="content-item"><span class="content-icon">🧱</span><span class="content-label">Blocks</span><span class="content-badge" id="badge-blocks">0</span></div>
         <div class="content-item"><span class="content-icon">⚔️</span><span class="content-label">Items</span><span class="content-badge" id="badge-items">0</span></div>
@@ -158,21 +204,25 @@ footer a{color:var(--cyan);text-decoration:none;}
         <div class="content-item"><span class="content-icon">🗺️</span><span class="content-label">Loot Tables</span><span class="content-badge" id="badge-loot">0</span></div>
       </div>
     </div>
+
     <div class="panel" style="margin-top:14px;">
-      <div class="panel-header"><div class="dot" style="background:var(--purple);box-shadow:0 0 6px var(--purple);"></div>Options</div>
+      <div class="panel-header">
+        <div class="dot" style="background:var(--purple);box-shadow:0 0 6px var(--purple);"></div>
+        Options
+      </div>
       <div class="options">
         <div class="opt-group">
           <div class="opt-label">Include</div>
-          <div class="opt-row"><span>Copy Textures</span><button class="toggle on" id="opt-tex" onclick="this.classList.toggle('on')"></button></div>
-          <div class="opt-row"><span>Copy Sounds</span><button class="toggle on" id="opt-snd" onclick="this.classList.toggle('on')"></button></div>
-          <div class="opt-row"><span>Convert Recipes</span><button class="toggle on" id="opt-rec" onclick="this.classList.toggle('on')"></button></div>
-          <div class="opt-row"><span>Convert Entities</span><button class="toggle on" id="opt-ent" onclick="this.classList.toggle('on')"></button></div>
-          <div class="opt-row"><span>Generate Script</span><button class="toggle on" id="opt-scr" onclick="this.classList.toggle('on')"></button></div>
-          <div class="opt-row"><span>Loot Tables</span><button class="toggle on" id="opt-loot" onclick="this.classList.toggle('on')"></button></div>
+          <div class="opt-row"><span>Copy Textures</span><button class="toggle on" id="opt-tex"></button></div>
+          <div class="opt-row"><span>Copy Sounds</span><button class="toggle on" id="opt-snd"></button></div>
+          <div class="opt-row"><span>Convert Recipes</span><button class="toggle on" id="opt-rec"></button></div>
+          <div class="opt-row"><span>Convert Entities</span><button class="toggle on" id="opt-ent"></button></div>
+          <div class="opt-row"><span>Generate Script</span><button class="toggle on" id="opt-scr"></button></div>
+          <div class="opt-row"><span>Loot Tables</span><button class="toggle on" id="opt-loot"></button></div>
         </div>
         <div class="opt-group">
-          <div class="opt-label">Bedrock Target</div>
-          <div class="opt-row"><span>Version</span>
+          <div class="opt-label">Bedrock Version</div>
+          <div class="opt-row"><span>Target</span>
             <select id="opt-ver">
               <option value="1.21.0">1.21.0</option>
               <option value="1.20.80">1.20.80</option>
@@ -182,31 +232,38 @@ footer a{color:var(--cyan);text-decoration:none;}
         </div>
         <div class="opt-group">
           <div class="opt-label">Namespace</div>
-          <div class="opt-row"><span>Pack ID</span><input type="text" id="opt-ns" value="mymod" style="width:80px;"/></div>
+          <div class="opt-row"><span>Pack ID</span>
+            <input type="text" id="opt-ns" value="mymod" maxlength="20" style="width:80px;"/>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- CENTER PANEL -->
+  <!-- CENTER -->
   <div>
     <div class="panel">
-      <div class="panel-header"><div class="dot" style="background:var(--green);box-shadow:0 0 6px var(--green);"></div>Upload Java Mod</div>
+      <div class="panel-header">
+        <div class="dot" style="background:var(--green);box-shadow:0 0 6px var(--green);"></div>
+        Upload Java Mod
+      </div>
 
-      <div class="upload-area" id="dropzone" onclick="document.getElementById('fileInput').click()">
+      <div class="upload-area" id="dropzone">
         <input type="file" id="fileInput" accept=".zip,.jar"/>
         <span class="upload-icon">📦</span>
         <h3>Drop your Java Mod here</h3>
         <p>Supports .jar and .zip — NeoForge, Forge, Fabric</p>
-        <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('fileInput').click()">Browse File</button>
-        <div class="file-info" id="file-info">
-          <div class="file-name" id="file-name">—</div>
-          <div class="file-size" id="file-size">—</div>
-        </div>
+        <button class="browse-btn" id="browse-btn">Browse File</button>
+      </div>
+
+      <div class="file-info" id="file-info">
+        <div class="file-name" id="file-name">—</div>
+        <div class="file-size" id="file-size">—</div>
       </div>
 
       <div class="alert-box" id="alert-box">
-        <span id="alert-icon"></span><span id="alert-msg"></span>
+        <span id="alert-icon"></span>
+        <span id="alert-msg"></span>
       </div>
 
       <div class="progress-wrap" id="progress-wrap">
@@ -214,7 +271,9 @@ footer a{color:var(--cyan);text-decoration:none;}
           <span id="progress-text">Working...</span>
           <span id="progress-pct">0%</span>
         </div>
-        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
       </div>
 
       <div class="btn-section" id="convert-section">
@@ -227,48 +286,825 @@ footer a{color:var(--cyan);text-decoration:none;}
     </div>
 
     <div class="panel" id="summary-panel" style="margin-top:14px;display:none;">
-      <div class="panel-header"><div class="dot" style="background:var(--green);box-shadow:0 0 6px var(--green);"></div>Conversion Summary</div>
+      <div class="panel-header">
+        <div class="dot" style="background:var(--green);box-shadow:0 0 6px var(--green);"></div>
+        Conversion Summary
+      </div>
       <div class="summary-grid" id="summary-grid"></div>
       <div id="summary-footer" style="padding:0 14px 14px;font-size:0.82rem;"></div>
     </div>
   </div>
 
-  <!-- RIGHT PANEL -->
+  <!-- RIGHT -->
   <div>
     <div class="panel">
       <div class="panel-header">
         <div class="dot" style="background:var(--yellow);box-shadow:0 0 6px var(--yellow);"></div>
         Log
-        <button onclick="document.getElementById('log-area').innerHTML=''" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--muted);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:0.68rem;">CLEAR</button>
+        <button id="clear-log-btn" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--muted);padding:2px 7px;border-radius:4px;cursor:pointer;font-size:0.68rem;">CLEAR</button>
       </div>
       <div class="log-area" id="log-area">
-        <div class="log-dim">[ Java2Bedrock v2.2 ready ]</div>
-        <div class="log-dim">[ Upload a mod to begin ]</div>
+        <div class="log-dim">[ Java2Bedrock v2.3 ready ]</div>
+        <div class="log-dim">[ Upload a .jar or .zip mod to begin ]</div>
       </div>
     </div>
+
     <div class="panel" style="margin-top:14px;">
-      <div class="panel-header"><div class="dot" style="background:var(--orange);box-shadow:0 0 6px var(--orange);"></div>Output Structure</div>
-      <div class="tree-area" id="file-tree"><span style="color:var(--border);">[ No output yet ]</span></div>
+      <div class="panel-header">
+        <div class="dot" style="background:var(--orange);box-shadow:0 0 6px var(--orange);"></div>
+        Output Structure
+      </div>
+      <div class="tree-area" id="file-tree">
+        <span style="color:var(--border);">[ No output yet ]</span>
+      </div>
     </div>
   </div>
 
 </div>
 
 <footer>
-  Java2Bedrock — Not affiliated with Mojang/Microsoft &nbsp;|&nbsp;
-  <a href="#">GitHub</a> &nbsp;|&nbsp; <a href="#">Docs</a><br/>
-  <span style="margin-top:5px;display:block;">⚠ Always test converted packs in a flat creative world first.</span>
+  Java2Bedrock — Not affiliated with Mojang / Microsoft &nbsp;|&nbsp;
+  <a href="#">Docs</a><br/>
+  <span style="display:block;margin-top:4px;">⚠ Always test converted packs in a flat creative world first.</span>
 </footer>
 
-<!-- JSZip CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <script>
 'use strict';
 
-// ═══════════════════════════════
+/* ════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════ */
+const S = {
+  file      : null,
+  zip       : null,
+  allFiles  : [],
+  detected  : {
+    blocks:[], items:[], entities:[], recipes:[],
+    textures:[], sounds:[], biomes:[], particles:[], food:[], loot:[]
+  },
+  textureMap : {},   // safeName → archivePath
+  outputZip  : null,
+  modName    : 'mod',
+  ready      : false
+};
+
+/* ════════════════════════════════════════════
+   PARTICLES (background decoration)
+════════════════════════════════════════════ */
+(function spawnParticles(){
+  const c = document.getElementById('particles');
+  for(let i = 0; i < 28; i++){
+    const p   = document.createElement('div');
+    p.className = 'particle';
+    const col  = Math.random() > 0.5 ? '#00f5ff' : '#9b59ff';
+    const size = 1 + Math.random() * 3;
+    p.style.cssText = [
+      `left:${Math.random()*100}%`,
+      `width:${size}px`,
+      `height:${size}px`,
+      `background:${col}`,
+      `animation-duration:${7+Math.random()*13}s`,
+      `animation-delay:${Math.random()*12}s`,
+      `--drift:${(Math.random()-0.5)*180}px`
+    ].join(';');
+    c.appendChild(p);
+  }
+})();
+
+/* ════════════════════════════════════════════
+   TOGGLE BUTTONS
+════════════════════════════════════════════ */
+document.querySelectorAll('.toggle').forEach(btn => {
+  btn.addEventListener('click', () => btn.classList.toggle('on'));
+});
+
+/* ════════════════════════════════════════════
+   CLEAR LOG
+════════════════════════════════════════════ */
+document.getElementById('clear-log-btn').addEventListener('click', () => {
+  document.getElementById('log-area').innerHTML = '';
+});
+
+/* ════════════════════════════════════════════
+   DRAG & DROP + FILE INPUT
+════════════════════════════════════════════ */
+const dz   = document.getElementById('dropzone');
+const fIn  = document.getElementById('fileInput');
+
+dz.addEventListener('click', () => fIn.click());
+document.getElementById('browse-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  fIn.click();
+});
+dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('dragover'); });
+dz.addEventListener('dragleave', ()  => dz.classList.remove('dragover'));
+dz.addEventListener('drop', e => {
+  e.preventDefault();
+  dz.classList.remove('dragover');
+  if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+fIn.addEventListener('change', e => {
+  if(e.target.files[0]) handleFile(e.target.files[0]);
+});
+
+/* ════════════════════════════════════════════
+   MAIN ACTION BUTTONS  (addEventListener only)
+════════════════════════════════════════════ */
+document.getElementById('convert-btn') .addEventListener('click', startConversion);
+document.getElementById('download-btn').addEventListener('click', downloadAddon);
+
+/* ════════════════════════════════════════════
+   UTILITY
+════════════════════════════════════════════ */
+function uuid(){
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random()*16|0;
+    return (c==='x' ? r : (r&0x3|0x8)).toString(16);
+  });
+}
+function fmtSize(b){
+  if(b < 1024)     return b + ' B';
+  if(b < 1048576)  return (b/1024).toFixed(1)    + ' KB';
+  return               (b/1048576).toFixed(2)  + ' MB';
+}
+function safe(s){
+  return String(s).toLowerCase()
+    .replace(/[^a-z0-9_]/g,'_')
+    .replace(/^_+|_+$/g,'')
+    .slice(0,48) || 'x';
+}
+function toDisplay(s){
+  return String(s).replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+function escH(s){
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function isOn(id){ return document.getElementById(id).classList.contains('on'); }
+
+/* ════════════════════════════════════════════
+   UI HELPERS
+════════════════════════════════════════════ */
+function log(msg, type='info'){
+  const area = document.getElementById('log-area');
+  const line = document.createElement('div');
+  line.className = 'log-line log-' + type;
+  const ts = new Date().toLocaleTimeString('en',{hour12:false});
+  line.innerHTML = `<span style="color:var(--muted)">[${ts}]</span> ${escH(String(msg))}`;
+  area.appendChild(line);
+  area.scrollTop = area.scrollHeight;
+}
+function logH(title){
+  const area = document.getElementById('log-area');
+  const line = document.createElement('div');
+  line.className = 'log-line log-head';
+  line.textContent = '─── ' + title + ' ───';
+  area.appendChild(line);
+  area.scrollTop = area.scrollHeight;
+}
+function setProgress(pct, label){
+  document.getElementById('progress-wrap').classList.add('show');
+  document.getElementById('progress-fill').style.width = Math.min(100, pct) + '%';
+  document.getElementById('progress-pct').textContent  = Math.round(pct) + '%';
+  if(label) document.getElementById('progress-text').textContent = label;
+}
+function showAlert(msg, type){
+  const icons = { success:'✓', error:'✗', info:'ℹ' };
+  const box   = document.getElementById('alert-box');
+  box.className = 'alert-box show ' + type;
+  document.getElementById('alert-icon').textContent = icons[type] || 'ℹ';
+  document.getElementById('alert-msg').textContent  = msg;
+}
+function hideAlert(){
+  document.getElementById('alert-box').className = 'alert-box';
+}
+function setBadge(id, n){
+  const el = document.getElementById('badge-' + id);
+  if(!el) return;
+  el.textContent = n;
+  el.className   = 'content-badge' + (n > 0 ? ' found' : '');
+}
+function setStat(id, v){
+  const el = document.getElementById('st-' + id);
+  if(el) el.textContent = v;
+}
+function setStep(n){
+  for(let i = 1; i <= 4; i++){
+    const el = document.getElementById('step' + i);
+    el.classList.remove('active','done');
+    if(i < n)      el.classList.add('done');
+    else if(i===n) el.classList.add('active');
+  }
+}
+
+/* ════════════════════════════════════════════
+   FILE HANDLER
+════════════════════════════════════════════ */
+async function handleFile(file){
+  if(!/\.(zip|jar)$/i.test(file.name)){
+    showAlert('Only .zip or .jar files are supported!','error');
+    return;
+  }
+  hideAlert();
+  S.file       = file;
+  S.ready      = false;
+  S.outputZip  = null;
+  S.textureMap = {};
+
+  // Reset UI
+  document.getElementById('file-name').textContent = file.name;
+  document.getElementById('file-size').textContent = fmtSize(file.size);
+  document.getElementById('file-info').classList.add('show');
+  document.getElementById('download-section').classList.remove('show');
+  document.getElementById('summary-panel').style.display = 'none';
+  document.getElementById('convert-section').classList.remove('show');
+
+  S.modName = file.name.replace(/\.(zip|jar)$/i,'').replace(/[^a-zA-Z0-9_\-]/g,'_');
+  document.getElementById('opt-ns').value = safe(S.modName).slice(0,16) || 'mymod';
+
+  setStep(2);
+  setProgress(5,'Reading archive...');
+  log('Loading: ' + file.name);
+
+  try {
+    const buf = await file.arrayBuffer();
+    const zip = await JSZip.loadAsync(buf);
+    S.zip      = zip;
+    S.allFiles = Object.keys(zip.files);
+    log('Opened — ' + S.allFiles.length + ' entries','ok');
+    setStat('files', S.allFiles.length);
+    setProgress(20,'Scanning...');
+    await scanMod(zip);
+    setProgress(100,'Scan complete!');
+    document.getElementById('convert-section').classList.add('show');
+    showAlert('Mod scanned! Configure options then click Convert.','success');
+    log('Ready to convert.','ok');
+  } catch(err){
+    log('Error loading file: ' + err.message,'err');
+    showAlert('Could not read file: ' + err.message,'error');
+    console.error(err);
+  }
+}
+
+/* ════════════════════════════════════════════
+   SCANNER
+════════════════════════════════════════════ */
+async function scanMod(zip){
+  const d = S.detected;
+  Object.keys(d).forEach(k => d[k] = []);
+  S.textureMap = {};
+
+  // Detect mod loader
+  if(S.allFiles.some(f => f.includes('META-INF/neoforge.mods.toml')))      log('Detected loader: NeoForge');
+  else if(S.allFiles.some(f => f.includes('fabric.mod.json')))              log('Detected loader: Fabric');
+  else if(S.allFiles.some(f => f.includes('META-INF/mods.toml')))           log('Detected loader: Forge');
+  else                                                                        log('Loader: Unknown / raw zip','warn');
+
+  for(const path of S.allFiles){
+    const lp    = path.toLowerCase();
+    const fname = path.split('/').pop();
+    const name  = fname.replace(/\.\w+$/,'');
+    if(!name || zip.files[path].dir) continue;
+
+    // Textures
+    if(/\.(png|jpg|jpeg)$/i.test(lp)){
+      d.textures.push(path);
+      const k = safe(name);
+      if(!S.textureMap[k]) S.textureMap[k] = path;
+      // Also index stripped variants
+      const stripped = k.replace(/_(block|item|tex|texture)$/,'');
+      if(!S.textureMap[stripped]) S.textureMap[stripped] = path;
+    }
+    // Blocks
+    if((lp.includes('/blockstates/') || lp.includes('/blocks/')) && lp.endsWith('.json')){
+      const n = safe(name); if(n && !d.blocks.includes(n)) d.blocks.push(n);
+    }
+    // Items
+    if((lp.includes('/items/') || lp.includes('models/item/')) && lp.endsWith('.json')){
+      const n = safe(name); if(n && !d.items.includes(n)) d.items.push(n);
+    }
+    // Entities
+    if((lp.includes('/entity/') || lp.includes('/entities/')) && lp.endsWith('.json')){
+      const n = safe(name); if(n && !d.entities.includes(n)) d.entities.push(n);
+    }
+    // Recipes
+    if(lp.includes('/recipes/') && lp.endsWith('.json')) d.recipes.push(path);
+    // Sounds
+    if(/\.(ogg|mp3|wav)$/i.test(lp)) d.sounds.push(path);
+    // Biomes
+    if(lp.includes('/biomes/') && lp.endsWith('.json')){
+      const n = safe(name); if(n && !d.biomes.includes(n)) d.biomes.push(n);
+    }
+    // Particles
+    if(lp.includes('/particles/') && lp.endsWith('.json')){
+      const n = safe(name); if(n && !d.particles.includes(n)) d.particles.push(n);
+    }
+    // Loot tables
+    if(lp.includes('/loot_tables/') && lp.endsWith('.json')) d.loot.push(path);
+  }
+
+  setProgress(40,'Scanning class files...');
+  for(const cf of S.allFiles.filter(f => f.endsWith('.class'))){
+    const cn = cf.split('/').pop().replace('.class','');
+    if(/Block$/i.test(cn)){
+      const n = safe(cn.replace(/Block$/i,''));
+      if(n && !d.blocks.includes(n)) d.blocks.push(n);
+    }
+    if(/Item$/i.test(cn)){
+      const n = safe(cn.replace(/Item$/i,''));
+      if(n && !d.items.includes(n)) d.items.push(n);
+    }
+    if(/(Entity|Mob|Boss)$/i.test(cn)){
+      const n = safe(cn.replace(/(Entity|Mob|Boss)$/i,''));
+      if(n && !d.entities.includes(n)) d.entities.push(n);
+    }
+    if(/FoodItem|FoodBlock/i.test(cn)){
+      const n = safe(cn.replace(/FoodItem|FoodBlock/gi,''));
+      if(n && !d.food.includes(n)) d.food.push(n);
+    }
+  }
+
+  setProgress(55,'Checking recipe files for food...');
+  for(const rp of d.recipes.slice(0,80)){
+    try{
+      const txt = await zip.file(rp).async('string');
+      const j   = JSON.parse(txt);
+      if(j.type && String(j.type).toLowerCase().includes('food')){
+        const n = safe(rp.split('/').pop().replace('.json',''));
+        if(n && !d.food.includes(n)) d.food.push(n);
+      }
+    }catch(e){}
+  }
+
+  // Update UI badges and stats
+  const map = [
+    ['blocks',d.blocks.length,'blocks'],
+    ['items',d.items.length,'items'],
+    ['entities',d.entities.length,'entities'],
+    ['recipes',d.recipes.length,'recipes'],
+    ['textures',d.textures.length,'textures'],
+    ['sounds',d.sounds.length,'sounds'],
+    ['biomes',d.biomes.length,null],
+    ['particles',d.particles.length,null],
+    ['food',d.food.length,null],
+    ['loot',d.loot.length,null]
+  ];
+  map.forEach(([bid,count,sid]) => {
+    setBadge(bid,count);
+    if(sid) setStat(sid,count);
+  });
+
+  log('Scan complete — Blocks:'+d.blocks.length+' Items:'+d.items.length+
+      ' Entities:'+d.entities.length+' Recipes:'+d.recipes.length,'ok');
+  log('Textures:'+d.textures.length+' Sounds:'+d.sounds.length+
+      ' Biomes:'+d.biomes.length+' Particles:'+d.particles.length,'ok');
+}
+
+/* ════════════════════════════════════════════
+   CONVERSION ENTRY POINT
+════════════════════════════════════════════ */
+async function startConversion(){
+  if(!S.zip){ showAlert('Upload a mod file first!','error'); return; }
+
+  const btn = document.getElementById('convert-btn');
+  btn.disabled    = true;
+  btn.textContent = '⚙ Converting...';
+  hideAlert();
+  setStep(3);
+
+  try {
+    await runConversion();
+  } catch(err){
+    log('Conversion error: ' + err.message,'err');
+    showAlert('Conversion failed: ' + err.message,'error');
+    console.error(err);
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = '⚡ CONVERT TO MCADDON';
+  }
+}
+
+/* ════════════════════════════════════════════
+   CONVERSION LOGIC
+════════════════════════════════════════════ */
+async function runConversion(){
+  const ns     = safe(document.getElementById('opt-ns').value) || 'mymod';
+  const ver    = document.getElementById('opt-ver').value;
+  const verArr = ver.split('.').map(Number);
+  const doTex  = isOn('opt-tex');
+  const doSnd  = isOn('opt-snd');
+  const doRec  = isOn('opt-rec');
+  const doEnt  = isOn('opt-ent');
+  const doScr  = isOn('opt-scr');
+  const doLoot = isOn('opt-loot');
+
+  const d   = S.detected;
+  const zip = S.zip;
+  const out = new JSZip();
+
+  const BP = p => `behaviour_pack/${p}`;
+  const RP = p => `resource_pack/${p}`;
+
+  const stats = { blocks:0, items:0, entities:0, recipes:0, textures:0, sounds:0, loot:0 };
+  // scheduledTex maps   destPath → srcArchivePath|null
+  const scheduledTex = new Map();
+
+  logH('CONVERSION  ns=' + ns + '  target=' + ver);
+
+  /* ── Texture resolver ── */
+  function resolveTex(name, category){
+    const k   = safe(name);
+    let   src = null;
+    for(const cand of [k, k+'_block', k+'_item',
+                       k.replace(/_block$/,''), k.replace(/_item$/,'')]){
+      if(S.textureMap[cand]){ src = S.textureMap[cand]; break; }
+    }
+    const destFile = RP(`textures/${category}/${k}.png`);
+    if(!scheduledTex.has(destFile)) scheduledTex.set(destFile, src);
+    return `textures/${category}/${k}`;  // atlas key (no .png)
+  }
+
+  /* ──────────────────────────────────────
+     1. MANIFESTS
+  ────────────────────────────────────── */
+  setProgress(5,'Writing manifests...');
+  const bpUUID = uuid(), rpUUID = uuid();
+
+  const bpManifest = {
+    format_version: 2,
+    header:{
+      name:`${ns} Behaviour Pack`,
+      description:`Converted by Java2Bedrock v2.3`,
+      uuid: bpUUID,
+      version:[1,0,0],
+      min_engine_version: verArr
+    },
+    modules:[{ type:'data', uuid:uuid(), version:[1,0,0] }],
+    dependencies:[{ uuid:rpUUID, version:[1,0,0] }]
+  };
+  if(doScr){
+    bpManifest.modules.push({
+      type:'script', language:'javascript', uuid:uuid(),
+      version:[1,0,0], entry:'scripts/main.js'
+    });
+    bpManifest.dependencies.push({ module_name:'@minecraft/server', version:'1.9.0' });
+  }
+
+  out.file(BP('manifest.json'), JSON.stringify(bpManifest, null, 2));
+  out.file(RP('manifest.json'), JSON.stringify({
+    format_version: 2,
+    header:{
+      name:`${ns} Resource Pack`,
+      description:`Converted by Java2Bedrock v2.3`,
+      uuid: rpUUID,
+      version:[1,0,0],
+      min_engine_version: verArr
+    },
+    modules:[{ type:'resources', uuid:uuid(), version:[1,0,0] }]
+  }, null, 2));
+  log('Manifests written','ok');
+
+  /* ──────────────────────────────────────
+     2. BLOCKS
+  ────────────────────────────────────── */
+  setProgress(10,'Converting blocks...');
+  logH('BLOCKS');
+  const terrainTex = {
+    resource_pack_name:'vanilla',
+    texture_name:'atlas.terrain',
+    padding:8, num_mip_levels:4,
+    texture_data:{}
+  };
+  const blocksJson = { format_version:'1.1.0' };
+
+  for(const b of d.blocks){
+    const id = `${ns}:${b}`;
+    const tp = resolveTex(b, 'blocks');
+    out.file(BP(`blocks/${b}.json`), JSON.stringify({
+      format_version: ver,
+      'minecraft:block':{
+        description:{ identifier:id, is_experimental:false },
+        components:{
+          'minecraft:destructible_by_mining':{ seconds_to_destroy:1.5 },
+          'minecraft:destructible_by_explosion':{ explosion_resistance:3 },
+          'minecraft:friction':{ value:0.4 },
+          'minecraft:map_color':'#888888',
+          'minecraft:material_instances':{
+            '*':{ texture:b, render_method:'opaque' }
+          }
+        }
+      }
+    }, null, 2));
+    terrainTex.texture_data[b] = { textures: tp };
+    blocksJson[id] = { sound:'stone', textures: b };
+    stats.blocks++;
+  }
+  if(d.blocks.length){
+    out.file(RP('textures/terrain_texture.json'), JSON.stringify(terrainTex, null, 2));
+    out.file(RP('blocks.json'), JSON.stringify(blocksJson, null, 2));
+  }
+  log(`Blocks: ${stats.blocks}`,'ok');
+
+  /* ──────────────────────────────────────
+     3. ITEMS
+  ────────────────────────────────────── */
+  setProgress(20,'Converting items...');
+  logH('ITEMS');
+  const itemAtlas = {
+    resource_pack_name:'vanilla',
+    texture_name:'atlas.items',
+    texture_data:{}
+  };
+  for(const it of d.items){
+    const id     = `${ns}:${it}`;
+    const isFood = d.food.includes(it);
+    const tp     = resolveTex(it, 'items');
+    const comps  = {
+      'minecraft:icon':{ texture:it },
+      'minecraft:display_name':{ value:toDisplay(it) },
+      'minecraft:max_stack_size':64
+    };
+    if(isFood){
+      comps['minecraft:food'] = { nutrition:4, saturation_modifier:0.3, can_always_eat:false };
+      comps['minecraft:use_duration'] = 32;
+    }
+    out.file(BP(`items/${it}.json`), JSON.stringify({
+      format_version: ver,
+      'minecraft:item':{ description:{ identifier:id, category:'Items' }, components:comps }
+    }, null, 2));
+    itemAtlas.texture_data[it] = { textures: tp };
+    stats.items++;
+  }
+  if(d.items.length){
+    out.file(RP('textures/item_texture.json'), JSON.stringify(itemAtlas, null, 2));
+  }
+  log(`Items: ${stats.items}`,'ok');
+
+  /* ──────────────────────────────────────
+     4. ENTITIES
+  ────────────────────────────────────── */
+  if(doEnt){
+    setProgress(30,'Converting entities...');
+    logH('ENTITIES');
+    for(const en of d.entities){
+      const id = `${ns}:${en}`;
+      const tp = resolveTex(en, 'entity');
+      out.file(BP(`entities/${en}.json`), JSON.stringify({
+        format_version:'1.18.0',
+        'minecraft:entity':{
+          description:{
+            identifier:id,
+            is_spawnable:true, is_summonable:true, is_experimental:false
+          },
+          component_groups:{},
+          components:{
+            'minecraft:physics':{ has_collision:true, has_gravity:true },
+            'minecraft:health':{ value:20, max:20 },
+            'minecraft:movement':{ value:0.25 },
+            'minecraft:collision_box':{ width:0.6, height:1.8 },
+            'minecraft:nameable':{},
+            'minecraft:pushable':{ is_pushable:true, is_pushable_by_piston:true },
+            'minecraft:behavior.random_stroll':{ priority:8, speed_multiplier:1.0 },
+            'minecraft:behavior.look_at_player':{ priority:7, look_distance:8 },
+            'minecraft:behavior.random_look_around':{ priority:9 }
+          },
+          events:{}
+        }
+      }, null, 2));
+      out.file(RP(`entity/${en}.entity.json`), JSON.stringify({
+        format_version:'1.10.0',
+        'minecraft:client_entity':{
+          description:{
+            identifier: id,
+            materials:{ default:'entity_alphatest' },
+            textures:{ default: tp },
+            geometry:{ default:`geometry.${en}` },
+            render_controllers:['controller.render.default'],
+            spawn_egg:{ base_color:'#606060', overlay_color:'#ff6600' }
+          }
+        }
+      }, null, 2));
+      stats.entities++;
+    }
+    log(`Entities: ${stats.entities}`,'ok');
+  }
+
+  /* ──────────────────────────────────────
+     5. RECIPES
+  ────────────────────────────────────── */
+  if(doRec){
+    setProgress(40,'Converting recipes...');
+    logH('RECIPES');
+    let ok=0, skip=0;
+    for(const rpath of d.recipes){
+      try{
+        const txt = await zip.file(rpath).async('string');
+        const jr  = JSON.parse(txt);
+        const rn  = safe(rpath.split('/').pop().replace('.json',''));
+        const br  = convertRecipe(jr, ns, rn, ver);
+        if(br){ out.file(BP(`recipes/${rn}.json`), JSON.stringify(br, null, 2)); ok++; }
+        else skip++;
+      }catch(e){ skip++; }
+    }
+    stats.recipes = ok;
+    log(`Recipes: ${ok} converted, ${skip} skipped`,'ok');
+  }
+
+  /* ──────────────────────────────────────
+     6. TEXTURES
+  ────────────────────────────────────── */
+  setProgress(52,'Copying textures...');
+  logH('TEXTURES');
+
+  // Pass A — copy every raw texture that isn't already scheduled
+  if(doTex){
+    for(const tp of d.textures){
+      const lp   = tp.toLowerCase();
+      const fn   = tp.split('/').pop();
+      let   dest;
+      if(lp.includes('/block'))       dest = RP(`textures/blocks/${fn}`);
+      else if(lp.includes('/item'))   dest = RP(`textures/items/${fn}`);
+      else if(lp.includes('/entity')) dest = RP(`textures/entity/${fn}`);
+      else                             dest = RP(`textures/misc/${fn}`);
+      if(!scheduledTex.has(dest)){
+        try{
+          out.file(dest, await zip.file(tp).async('uint8array'));
+          stats.textures++;
+        }catch(e){}
+      }
+    }
+  }
+
+  // Pass B — write every atlas-referenced texture (real or placeholder)
+  let placeholders = 0;
+  for(const [dest, src] of scheduledTex.entries()){
+    if(src){
+      try{
+        out.file(dest, await zip.file(src).async('uint8array'));
+        stats.textures++;
+      }catch(e){
+        out.file(dest, makePNG());
+        placeholders++;
+      }
+    } else {
+      out.file(dest, makePNG());
+      placeholders++;
+    }
+  }
+  log(`Textures: ${stats.textures} copied, ${placeholders} placeholder(s) generated`,'ok');
+
+  /* ──────────────────────────────────────
+     7. SOUNDS
+  ────────────────────────────────────── */
+  if(doSnd && d.sounds.length){
+    setProgress(65,'Copying sounds...');
+    logH('SOUNDS');
+    const sdefs = { format_version:'1.14.0', sound_definitions:{} };
+    let ok = 0;
+    for(const sp of d.sounds){
+      try{
+        const fn = sp.split('/').pop();
+        out.file(RP(`sounds/custom/${fn}`), await zip.file(sp).async('uint8array'));
+        const key = fn.replace(/\.(ogg|mp3|wav)$/i,'');
+        sdefs.sound_definitions[`${ns}.${key}`] = {
+          category:'neutral',
+          sounds:[{ name:`sounds/custom/${fn}`, stream:false }]
+        };
+        ok++;
+      }catch(e){}
+    }
+    if(ok) out.file(RP('sounds/sound_definitions.json'), JSON.stringify(sdefs, null, 2));
+    stats.sounds = ok;
+    log(`Sounds: ${ok}`,'ok');
+  }
+
+  /* ──────────────────────────────────────
+     8. LOOT TABLES
+  ────────────────────────────────────── */
+  if(doLoot && d.loot.length){
+    setProgress(72,'Converting loot tables...');
+    logH('LOOT TABLES');
+    let ok = 0;
+    for(const lp of d.loot){
+      try{
+        const j  = JSON.parse(await zip.file(lp).async('string'));
+        const fn = lp.split('/').pop();
+        out.file(BP(`loot_tables/${fn}`), JSON.stringify(convertLoot(j, ns), null, 2));
+        ok++;
+      }catch(e){}
+    }
+    stats.loot = ok;
+    log(`Loot tables: ${ok}`,'ok');
+  }
+
+  /* ──────────────────────────────────────
+     9. BIOMES
+  ────────────────────────────────────── */
+  if(d.biomes.length){
+    setProgress(77,'Writing biomes...');
+    for(const bm of d.biomes){
+      out.file(BP(`biomes/${bm}.json`), JSON.stringify({
+        format_version:'1.13.0',
+        'minecraft:biome':{
+          description:{ identifier:`${ns}:${bm}` },
+          components:{
+            'minecraft:surface_parameters':{
+              sea_floor_depth:7,
+              sea_floor_material:'minecraft:gravel',
+              foundation_material:'minecraft:stone',
+              mid_material:'minecraft:dirt',
+              top_material:'minecraft:grass'
+            },
+            'minecraft:climate':{ temperature:0.5, downfall:0.5 }
+          }
+        }
+      }, null, 2));
+    }
+    log(`Biomes: ${d.biomes.length}`,'ok');
+  }
+
+  /* ──────────────────────────────────────
+     10. PARTICLES
+  ────────────────────────────────────── */
+  if(d.particles.length){
+    setProgress(80,'Writing particles...');
+    for(const pt of d.particles){
+      out.file(RP(`particles/${pt}.json`), JSON.stringify({
+        format_version:'1.10.0',
+        particle_effect:{
+          description:{
+            identifier:`${ns}:${pt}`,
+            basic_render_parameters:{ material:'particles_alpha', texture:'textures/particle/particles' }
+          },
+          components:{
+            'minecraft:emitter_rate_instant':{ num_particles:10 },
+            'minecraft:emitter_lifetime_once':{ active_time:1 },
+            'minecraft:emitter_shape_point':{ offset:[0,0,0], direction:'outward' },
+            'minecraft:particle_lifetime_expression':{ max_lifetime:1.0 },
+            'minecraft:particle_appearance_billboard':{
+              size:[0.1,0.1],
+              facing_camera_type:'lookat_xyz',
+              uv:{ texture_width:128, texture_height:128, uv:[0,0], uv_size:[8,8] }
+            }
+          }
+        }
+      }, null, 2));
+    }
+    log(`Particles: ${d.particles.length}`,'ok');
+  }
+
+  /* ──────────────────────────────────────
+     11. SCRIPT API
+  ────────────────────────────────────── */
+  if(doScr){
+    setProgress(84,'Generating Script API...');
+    logH('SCRIPT API');
+    const lines = [
+      `// Java2Bedrock – Auto-generated Script API`,
+      `// Namespace: ${ns}  |  Generated: ${new Date().toISOString()}`,
+      `import { world, system, ItemStack } from "@minecraft/server";`,
+      ``,
+      `world.afterEvents.worldInitialize.subscribe(() => {`,
+      `  console.log("[${ns}] Add-on loaded via Java2Bedrock!");`,
+      `});`,
+      ``
+    ];
+    if(d.blocks.length){
+      lines.push(`// Block break drops`);
+      lines.push(`world.afterEvents.playerBreakBlock.subscribe(ev => {`);
+      lines.push(`  const bid = ev.block.typeId;`);
+      for(const b of d.blocks.slice(0,20)){
+        lines.push(`  if(bid === '${ns}:${b}') ev.player.dimension.spawnItem(new ItemStack('${ns}:${b}', 1), ev.block.location);`);
+      }
+      lines.push(`});`,'');
+    }
+    if(d.items.length){
+      lines.push(`// Item use handler`);
+      lines.push(`world.afterEvents.itemUse.subscribe(ev => {`);
+      lines.push(`  const iid = ev.itemStack.typeId;`);
+      for(const it of d.items.slice(0,20)){
+        lines.push(`  if(iid === '${ns}:${it}') ev.source.sendMessage('§b[${ns}] Used: ${toDisplay(it)}');`);
+      }
+      lines.push(`});`,'');
+    }
+    if(d.entities.length){
+      lines.push(`// Entity spawn handler`);
+      lines.push(`world.afterEvents.entitySpawn.subscribe(ev => {`);
+      lines.push(`  const eid = ev.entity.typeId;`);
+      for(const en of d.entities.slice(0,10)){
+        lines.push(`  if(eid === '${ns}:${en}') console.log('[${ns}] Spawned: ${en}');`);
+      }
+      lines.push(`});`,'');
+    }
+    lines.push(`// Tick counter`);
+    lines.push(`let _tick = 0;`);
+    'use strict';
+
+// ═══════════════════════════════════════
 // STATE
-// ═══════════════════════════════
+// ═══════════════════════════════════════
 const S = {
   file: null,
   zip: null,
@@ -283,9 +1119,9 @@ const S = {
   ready: false
 };
 
-// ═══════════════════════════════
-// PARTICLES
-// ═══════════════════════════════
+// ═══════════════════════════════════════
+// PARTICLES BACKGROUND
+// ═══════════════════════════════════════
 (function(){
   const c = document.getElementById('particles');
   for(let i = 0; i < 30; i++){
@@ -298,9 +1134,9 @@ const S = {
   }
 })();
 
-// ═══════════════════════════════
-// DRAG & DROP
-// ═══════════════════════════════
+// ═══════════════════════════════════════
+// DRAG AND DROP
+// ═══════════════════════════════════════
 const dz = document.getElementById('dropzone');
 dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
 dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
@@ -313,16 +1149,22 @@ document.getElementById('fileInput').addEventListener('change', e => {
   if(e.target.files[0]) handleFile(e.target.files[0]);
 });
 
-// ═══════════════════════════════
-// BUTTON EVENT LISTENERS
-// (set via addEventListener — NOT inline onclick — to avoid issues)
-// ═══════════════════════════════
-document.getElementById('convert-btn').addEventListener('click', startConversion);
-document.getElementById('download-btn').addEventListener('click', downloadAddon);
+// ═══════════════════════════════════════
+// BUTTON LISTENERS — addEventListener only
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('convert-btn').addEventListener('click', startConversion);
+  document.getElementById('download-btn').addEventListener('click', downloadAddon);
+});
+// Fallback in case DOMContentLoaded already fired
+if(document.readyState !== 'loading'){
+  document.getElementById('convert-btn').addEventListener('click', startConversion);
+  document.getElementById('download-btn').addEventListener('click', downloadAddon);
+}
 
-// ═══════════════════════════════
-// UTILS
-// ═══════════════════════════════
+// ═══════════════════════════════════════
+// UTILITY FUNCTIONS
+// ═══════════════════════════════════════
 function uuid(){
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     const r = Math.random()*16|0;
@@ -343,16 +1185,17 @@ function toDisplay(s){
 function escH(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
 
-// ═══════════════════════════════
+// ═══════════════════════════════════════
 // UI HELPERS
-// ═══════════════════════════════
+// ═══════════════════════════════════════
 function log(msg, type='info'){
   const a = document.getElementById('log-area');
   const d = document.createElement('div');
   d.className = 'log-line log-' + type;
   const ts = new Date().toLocaleTimeString('en',{hour12:false});
-  d.innerHTML = `<span style="color:var(--muted)">[${ts}]</span> ${escH(msg)}`;
+  d.innerHTML = `<span style="color:var(--muted)">[${ts}]</span> ${escH(String(msg))}`;
   a.appendChild(d);
   a.scrollTop = a.scrollHeight;
 }
@@ -365,20 +1208,25 @@ function logH(msg){
   a.scrollTop = a.scrollHeight;
 }
 function setProgress(pct, label){
-  document.getElementById('progress-wrap').classList.add('show');
-  document.getElementById('progress-fill').style.width = Math.min(100,pct) + '%';
-  document.getElementById('progress-pct').textContent = Math.round(pct) + '%';
-  if(label) document.getElementById('progress-text').textContent = label;
+  const wrap = document.getElementById('progress-wrap');
+  if(wrap) wrap.classList.add('show');
+  const fill = document.getElementById('progress-fill');
+  const pctEl = document.getElementById('progress-pct');
+  const txtEl = document.getElementById('progress-text');
+  if(fill) fill.style.width = Math.min(100, Math.max(0, pct)) + '%';
+  if(pctEl) pctEl.textContent = Math.round(pct) + '%';
+  if(label && txtEl) txtEl.textContent = label;
 }
 function showAlert(msg, type){
   const b = document.getElementById('alert-box');
-  const icons = {success:'✓', error:'✗', info:'ℹ'};
-  b.className = 'alert-box show ' + type;
-  document.getElementById('alert-icon').textContent = icons[type]||'ℹ';
+  const icons = { success:'✓', error:'✗', info:'ℹ' };
+  b.className = 'alert-box show ' + (type||'info');
+  document.getElementById('alert-icon').textContent = icons[type] || 'ℹ';
   document.getElementById('alert-msg').textContent = msg;
 }
 function hideAlert(){
-  document.getElementById('alert-box').className = 'alert-box';
+  const b = document.getElementById('alert-box');
+  if(b) b.className = 'alert-box';
 }
 function setBadge(id, n){
   const el = document.getElementById('badge-'+id);
@@ -391,25 +1239,26 @@ function setStat(id, v){
   if(el) el.textContent = v;
 }
 function setStep(n){
-  for(let i=1;i<=4;i++){
+  for(let i = 1; i <= 4; i++){
     const el = document.getElementById('step'+i);
+    if(!el) continue;
     el.classList.remove('active','done');
     if(i < n) el.classList.add('done');
     else if(i === n) el.classList.add('active');
   }
 }
 
-// ═══════════════════════════════
+// ═══════════════════════════════════════
 // FILE HANDLER
-// ═══════════════════════════════
+// ═══════════════════════════════════════
 async function handleFile(file){
   if(!/\.(zip|jar)$/i.test(file.name)){
-    showAlert('Only .zip or .jar files are supported!', 'error');
+    showAlert('Only .zip or .jar files are supported!','error');
     return;
   }
   hideAlert();
-  S.file = file;
-  S.ready = false;
+  S.file      = file;
+  S.ready     = false;
   S.outputZip = null;
   S.textureMap = {};
 
@@ -423,47 +1272,51 @@ async function handleFile(file){
   document.getElementById('opt-ns').value = safe(S.modName).slice(0,16) || 'mymod';
 
   setStep(2);
-  setProgress(5, 'Reading archive...');
-  log('Loading: ' + file.name, 'info');
+  setProgress(5,'Reading archive...');
+  log('Loading: ' + file.name,'info');
 
-  try {
+  try{
     const buf = await file.arrayBuffer();
     const zip = await JSZip.loadAsync(buf);
     S.zip = zip;
     S.allFiles = Object.keys(zip.files);
-    log('Opened — ' + S.allFiles.length + ' entries', 'ok');
+    log('Archive opened — ' + S.allFiles.length + ' entries','ok');
     setStat('files', S.allFiles.length);
-    setProgress(20, 'Scanning...');
+    setProgress(20,'Scanning contents...');
     await scanMod(zip);
-    setProgress(100, 'Scan complete!');
+    setProgress(100,'Scan complete!');
     document.getElementById('convert-section').classList.add('show');
-    showAlert('Mod scanned! Click Convert to proceed.', 'success');
-    log('Ready to convert.', 'ok');
+    showAlert('Mod scanned successfully! Click Convert to begin.','success');
+    log('Scan complete. Ready to convert.','ok');
   } catch(err){
-    log('Error: ' + err.message, 'err');
-    showAlert('Could not read file: ' + err.message, 'error');
+    log('Error reading file: ' + err.message,'err');
+    showAlert('Could not read file: ' + err.message,'error');
+    console.error('[Java2Bedrock] handleFile error:', err);
   }
 }
 
-// ═══════════════════════════════
-// SCANNER
-// ═══════════════════════════════
+// ═══════════════════════════════════════
+// MOD SCANNER
+// ═══════════════════════════════════════
 async function scanMod(zip){
   const d = S.detected;
   Object.keys(d).forEach(k => d[k] = []);
   S.textureMap = {};
 
-  if(S.allFiles.some(f => f.includes('META-INF/neoforge.mods.toml'))) log('Loader: NeoForge','info');
-  else if(S.allFiles.some(f => f.includes('fabric.mod.json'))) log('Loader: Fabric','info');
-  else if(S.allFiles.some(f => f.includes('META-INF/mods.toml'))) log('Loader: Forge','info');
-  else log('Loader: Unknown','warn');
+  // Detect mod loader
+  if(S.allFiles.some(f => f.includes('META-INF/neoforge.mods.toml'))) log('Loader detected: NeoForge','info');
+  else if(S.allFiles.some(f => f.includes('fabric.mod.json')))        log('Loader detected: Fabric','info');
+  else if(S.allFiles.some(f => f.includes('META-INF/mods.toml')))     log('Loader detected: Forge','info');
+  else                                                                   log('Loader: Unknown (generic scan)','warn');
 
+  // First pass — all files
   for(const path of S.allFiles){
-    const lp = path.toLowerCase();
+    const lp    = path.toLowerCase();
     const fname = path.split('/').pop();
-    const name = fname.replace(/\.\w+$/,'');
+    const name  = fname.replace(/\.\w+$/,'');
     if(!name) continue;
 
+    // Textures
     if(/\.(png|jpg|jpeg)$/i.test(lp)){
       d.textures.push(path);
       const k = name.toLowerCase();
@@ -471,83 +1324,114 @@ async function scanMod(zip){
       const stripped = k.replace(/_(block|item|tex|texture)$/,'');
       if(!S.textureMap[stripped]) S.textureMap[stripped] = path;
     }
-    if((lp.includes('/blockstates/')||lp.includes('/blocks/')) && lp.endsWith('.json')){
-      const n = safe(name); if(n && !d.blocks.includes(n)) d.blocks.push(n);
+    // Blocks
+    if((lp.includes('/blockstates/') || lp.includes('/blocks/')) && lp.endsWith('.json')){
+      const n = safe(name);
+      if(n && !d.blocks.includes(n)) d.blocks.push(n);
     }
-    if((lp.includes('/items/')||lp.includes('models/item/')) && lp.endsWith('.json')){
-      const n = safe(name); if(n && !d.items.includes(n)) d.items.push(n);
+    // Items
+    if((lp.includes('/items/') || lp.includes('models/item/')) && lp.endsWith('.json')){
+      const n = safe(name);
+      if(n && !d.items.includes(n)) d.items.push(n);
     }
-    if((lp.includes('/entity/')||lp.includes('/entities/')) && lp.endsWith('.json')){
-      const n = safe(name); if(n && !d.entities.includes(n)) d.entities.push(n);
+    // Entities
+    if((lp.includes('/entity/') || lp.includes('/entities/')) && lp.endsWith('.json')){
+      const n = safe(name);
+      if(n && !d.entities.includes(n)) d.entities.push(n);
     }
+    // Recipes
     if(lp.includes('/recipes/') && lp.endsWith('.json')) d.recipes.push(path);
+    // Sounds
     if(/\.(ogg|mp3|wav)$/i.test(lp)) d.sounds.push(path);
+    // Biomes
     if(lp.includes('/biomes/') && lp.endsWith('.json')){
-      const n = safe(name); if(n && !d.biomes.includes(n)) d.biomes.push(n);
+      const n = safe(name);
+      if(n && !d.biomes.includes(n)) d.biomes.push(n);
     }
+    // Particles
     if(lp.includes('/particles/') && lp.endsWith('.json')){
-      const n = safe(name); if(n && !d.particles.includes(n)) d.particles.push(n);
+      const n = safe(name);
+      if(n && !d.particles.includes(n)) d.particles.push(n);
     }
+    // Loot tables
     if(lp.includes('/loot_tables/') && lp.endsWith('.json')) d.loot.push(path);
   }
 
-  setProgress(40, 'Scanning class files...');
+  setProgress(40,'Scanning class files...');
+  // Second pass — .class file name heuristics
   for(const cf of S.allFiles.filter(f => f.endsWith('.class'))){
     const cn = cf.split('/').pop().replace('.class','');
-    if(/Block$/i.test(cn)){ const n=safe(cn.replace(/Block$/i,'')); if(n&&!d.blocks.includes(n)) d.blocks.push(n); }
-    if(/Item$/i.test(cn)){ const n=safe(cn.replace(/Item$/i,'')); if(n&&!d.items.includes(n)) d.items.push(n); }
-    if(/(Entity|Mob|Boss)$/i.test(cn)){ const n=safe(cn.replace(/(Entity|Mob|Boss)$/i,'')); if(n&&!d.entities.includes(n)) d.entities.push(n); }
-    if(/FoodItem|FoodBlock/i.test(cn)){ const n=safe(cn.replace(/FoodItem|FoodBlock/gi,'')); if(n&&!d.food.includes(n)) d.food.push(n); }
+    if(/Block$/i.test(cn)){
+      const n = safe(cn.replace(/Block$/i,''));
+      if(n && !d.blocks.includes(n)) d.blocks.push(n);
+    }
+    if(/Item$/i.test(cn)){
+      const n = safe(cn.replace(/Item$/i,''));
+      if(n && !d.items.includes(n)) d.items.push(n);
+    }
+    if(/(Entity|Mob|Boss)$/i.test(cn)){
+      const n = safe(cn.replace(/(Entity|Mob|Boss)$/i,''));
+      if(n && !d.entities.includes(n)) d.entities.push(n);
+    }
+    if(/Food(Item|Block)/i.test(cn)){
+      const n = safe(cn.replace(/Food(Item|Block)/gi,''));
+      if(n && !d.food.includes(n)) d.food.push(n);
+    }
   }
 
-  setProgress(55, 'Checking recipes...');
-  for(const rp of d.recipes.slice(0,60)){
+  setProgress(55,'Scanning recipes for food...');
+  for(const rp of d.recipes.slice(0,80)){
     try{
       const txt = await zip.file(rp).async('string');
-      const j = JSON.parse(txt);
-      if(j.type && String(j.type).includes('food')){
+      const j   = JSON.parse(txt);
+      if(j.type && String(j.type).toLowerCase().includes('food')){
         const n = safe(rp.split('/').pop().replace('.json',''));
-        if(!d.food.includes(n)) d.food.push(n);
+        if(n && !d.food.includes(n)) d.food.push(n);
       }
-    }catch(e){}
+    } catch(e){}
   }
 
-  setBadge('blocks', d.blocks.length);   setStat('blocks', d.blocks.length);
-  setBadge('items', d.items.length);     setStat('items', d.items.length);
-  setBadge('entities', d.entities.length); setStat('entities', d.entities.length);
-  setBadge('recipes', d.recipes.length);  setStat('recipes', d.recipes.length);
-  setBadge('textures', d.textures.length); setStat('textures', d.textures.length);
-  setBadge('sounds', d.sounds.length);   setStat('sounds', d.sounds.length);
-  setBadge('biomes', d.biomes.length);
+  // Update UI badges and stats
+  setBadge('blocks',    d.blocks.length);    setStat('blocks',    d.blocks.length);
+  setBadge('items',     d.items.length);     setStat('items',     d.items.length);
+  setBadge('entities',  d.entities.length);  setStat('entities',  d.entities.length);
+  setBadge('recipes',   d.recipes.length);   setStat('recipes',   d.recipes.length);
+  setBadge('textures',  d.textures.length);  setStat('textures',  d.textures.length);
+  setBadge('sounds',    d.sounds.length);    setStat('sounds',    d.sounds.length);
+  setBadge('biomes',    d.biomes.length);
   setBadge('particles', d.particles.length);
-  setBadge('food', d.food.length);
-  setBadge('loot', d.loot.length);
+  setBadge('food',      d.food.length);
+  setBadge('loot',      d.loot.length);
 
-  log(`Blocks:${d.blocks.length} Items:${d.items.length} Entities:${d.entities.length} Recipes:${d.recipes.length}`, 'ok');
-  log(`Textures:${d.textures.length} Sounds:${d.sounds.length} Biomes:${d.biomes.length}`, 'ok');
+  log(`Blocks:${d.blocks.length} Items:${d.items.length} Entities:${d.entities.length} Recipes:${d.recipes.length}`,'ok');
+  log(`Textures:${d.textures.length} Sounds:${d.sounds.length} Biomes:${d.biomes.length} Loot:${d.loot.length}`,'ok');
 }
 
-// ═══════════════════════════════
+// ═══════════════════════════════════════
 // MAIN CONVERSION
-// ═══════════════════════════════
+// ═══════════════════════════════════════
 async function startConversion(){
-  if(!S.zip){ showAlert('Upload a mod file first!','error'); return; }
+  if(!S.zip){
+    showAlert('Please upload a mod file first!','error');
+    return;
+  }
 
-  const btn = document.getElementById('convert-btn');
-  btn.disabled = true;
-  btn.textContent = '⚙ Converting...';
+  const convertBtn = document.getElementById('convert-btn');
+  convertBtn.disabled = true;
+  convertBtn.textContent = '⚙ Converting...';
   hideAlert();
   setStep(3);
 
-  const ns    = safe(document.getElementById('opt-ns').value || 'mymod');
-  const ver   = document.getElementById('opt-ver').value;
-  const doTex = document.getElementById('opt-tex').classList.contains('on');
-  const doSnd = document.getElementById('opt-snd').classList.contains('on');
-  const doRec = document.getElementById('opt-rec').classList.contains('on');
-  const doEnt = document.getElementById('opt-ent').classList.contains('on');
-  const doScr = document.getElementById('opt-scr').classList.contains('on');
-  const doLoot= document.getElementById('opt-loot').classList.contains('on');
-  const verArr= ver.split('.').map(Number);
+  // Read options
+  const ns     = safe(document.getElementById('opt-ns').value || 'mymod');
+  const ver    = document.getElementById('opt-ver').value || '1.21.0';
+  const doTex  = document.getElementById('opt-tex').classList.contains('on');
+  const doSnd  = document.getElementById('opt-snd').classList.contains('on');
+  const doRec  = document.getElementById('opt-rec').classList.contains('on');
+  const doEnt  = document.getElementById('opt-ent').classList.contains('on');
+  const doScr  = document.getElementById('opt-scr').classList.contains('on');
+  const doLoot = document.getElementById('opt-loot').classList.contains('on');
+  const verArr = ver.split('.').map(Number);
 
   const d   = S.detected;
   const zip = S.zip;
@@ -556,380 +1440,510 @@ async function startConversion(){
   const BP = p => `behaviour_pack/${p}`;
   const RP = p => `resource_pack/${p}`;
 
-  const stats = {blocks:0,items:0,entities:0,recipes:0,textures:0,sounds:0,loot:0};
+  const stats = { blocks:0, items:0, entities:0, recipes:0, textures:0, sounds:0, loot:0 };
   const scheduledTex = new Map();
 
-  logH('CONVERTING  ns=' + ns + '  ver=' + ver);
+  logH('STARTING CONVERSION  ns=' + ns + '  ver=' + ver);
+  await sleep(10);
 
-  // ── Texture resolver
+  // ─────────────────────────────────────
+  // TEXTURE RESOLVER
+  // Returns the atlas key path and
+  // schedules the PNG copy/placeholder
+  // ─────────────────────────────────────
   function resolveTex(name, cat){
-    const k = name.toLowerCase();
-    let src = null;
-    for(const cand of [k, k+'_block', k+'_item', k.replace(/_block$/,''), k.replace(/_item$/,'')]){
+    const k   = name.toLowerCase();
+    let src   = null;
+    const candidates = [
+      k, k+'_block', k+'_item', k+'_texture',
+      k.replace(/_block$/,''), k.replace(/_item$/,'')
+    ];
+    for(const cand of candidates){
       if(S.textureMap[cand]){ src = S.textureMap[cand]; break; }
     }
     const destFile = RP(`textures/${cat}/${k}.png`);
-    scheduledTex.set(destFile, src);
+    if(!scheduledTex.has(destFile)) scheduledTex.set(destFile, src);
     return `textures/${cat}/${k}`;
   }
 
-  // ── 1. MANIFESTS
-  setProgress(5,'Manifests...');
-  const bpUUID=uuid(), rpUUID=uuid();
-  const bpMod={
-    format_version:2,
-    header:{name:`${ns} BP`,description:'Converted by Java2Bedrock',uuid:bpUUID,version:[1,0,0],min_engine_version:verArr},
-    modules:[{type:'data',uuid:uuid(),version:[1,0,0]}],
-    dependencies:[{uuid:rpUUID,version:[1,0,0]}]
+  // ─────────────────────────────────────
+  // 1. MANIFESTS
+  // ─────────────────────────────────────
+  setProgress(5,'Writing manifests...');
+  const bpUUID = uuid();
+  const rpUUID = uuid();
+  const bpManifest = {
+    format_version: 2,
+    header:{
+      name:`${ns} Behaviour Pack`,
+      description:`Converted from Java mod by Java2Bedrock v2.3`,
+      uuid: bpUUID,
+      version:[1,0,0],
+      min_engine_version: verArr
+    },
+    modules:[{ type:'data', uuid:uuid(), version:[1,0,0] }],
+    dependencies:[{ uuid:rpUUID, version:[1,0,0] }]
   };
   if(doScr){
-    bpMod.modules.push({type:'script',language:'javascript',uuid:uuid(),version:[1,0,0],entry:'scripts/main.js'});
-    bpMod.dependencies.push({module_name:'@minecraft/server',version:'1.9.0'});
+    bpManifest.modules.push({ type:'script', language:'javascript', uuid:uuid(), version:[1,0,0], entry:'scripts/main.js' });
+    bpManifest.dependencies.push({ module_name:'@minecraft/server', version:'1.9.0' });
   }
-  out.file(BP('manifest.json'), JSON.stringify(bpMod,null,2));
+  out.file(BP('manifest.json'), JSON.stringify(bpManifest, null, 2));
   out.file(RP('manifest.json'), JSON.stringify({
-    format_version:2,
-    header:{name:`${ns} RP`,description:'Converted by Java2Bedrock',uuid:rpUUID,version:[1,0,0],min_engine_version:verArr},
-    modules:[{type:'resources',uuid:uuid(),version:[1,0,0]}]
-  },null,2));
-  log('Manifests OK','ok');
+    format_version: 2,
+    header:{
+      name:`${ns} Resource Pack`,
+      description:`Converted from Java mod by Java2Bedrock v2.3`,
+      uuid: rpUUID,
+      version:[1,0,0],
+      min_engine_version: verArr
+    },
+    modules:[{ type:'resources', uuid:uuid(), version:[1,0,0] }]
+  }, null, 2));
+  log('Manifests written','ok');
 
-  // ── 2. BLOCKS
-  setProgress(12,'Blocks...');logH('BLOCKS');
-  const terrainTex = {resource_pack_name:'vanilla',texture_name:'atlas.terrain',padding:8,num_mip_levels:4,texture_data:{}};
-  const blocksRes  = {format_version:'1.1.0'};
+  // ─────────────────────────────────────
+  // 2. BLOCKS
+  // ─────────────────────────────────────
+  setProgress(12,'Converting blocks...'); logH('BLOCKS');
+  const terrainTex = {
+    resource_pack_name:'vanilla',
+    texture_name:'atlas.terrain',
+    padding:8,
+    num_mip_levels:4,
+    texture_data:{}
+  };
+  const blocksJson = { format_version:'1.1.0' };
+
   for(const b of d.blocks){
     const id = `${ns}:${b}`;
-    const tp = resolveTex(b,'blocks');
+    const tp = resolveTex(b, 'blocks');
     out.file(BP(`blocks/${b}.json`), JSON.stringify({
-      format_version:ver,
+      format_version: ver,
       'minecraft:block':{
-        description:{identifier:id,is_experimental:false},
+        description:{ identifier:id, is_experimental:false },
         components:{
-          'minecraft:destructible_by_mining':{seconds_to_destroy:1.5},
-          'minecraft:destructible_by_explosion':{explosion_resistance:3},
-          'minecraft:friction':{value:0.4},
+          'minecraft:destructible_by_mining':{ seconds_to_destroy:1.5 },
+          'minecraft:destructible_by_explosion':{ explosion_resistance:3 },
+          'minecraft:friction':{ value:0.4 },
           'minecraft:map_color':'#888888',
-          'minecraft:material_instances':{'*':{texture:b,render_method:'opaque'}}
+          'minecraft:material_instances':{ '*':{ texture:b, render_method:'opaque' } }
         }
       }
-    },null,2));
-    terrainTex.texture_data[b] = {textures: tp};
-    blocksRes[id] = {sound:'stone', textures: b};
+    }, null, 2));
+    terrainTex.texture_data[b] = { textures: tp };
+    blocksJson[id] = { sound:'stone', textures: b };
     stats.blocks++;
   }
   if(d.blocks.length){
-    out.file(RP('textures/terrain_texture.json'), JSON.stringify(terrainTex,null,2));
-    out.file(RP('blocks.json'), JSON.stringify(blocksRes,null,2));
-    log(`Blocks: ${stats.blocks}`,'ok');
+    out.file(RP('textures/terrain_texture.json'), JSON.stringify(terrainTex, null, 2));
+    out.file(RP('blocks.json'), JSON.stringify(blocksJson, null, 2));
   }
+  log('Blocks converted: ' + stats.blocks,'ok');
+  await sleep(10);
 
-  // ── 3. ITEMS
-  setProgress(22,'Items...');logH('ITEMS');
-  const itemAtlas = {resource_pack_name:'vanilla',texture_name:'atlas.items',texture_data:{}};
+  // ─────────────────────────────────────
+  // 3. ITEMS
+  // ─────────────────────────────────────
+  setProgress(22,'Converting items...'); logH('ITEMS');
+  const itemAtlas = {
+    resource_pack_name:'vanilla',
+    texture_name:'atlas.items',
+    texture_data:{}
+  };
+
   for(const it of d.items){
-    const id = `${ns}:${it}`;
+    const id     = `${ns}:${it}`;
     const isFood = d.food.includes(it);
-    const tp = resolveTex(it,'items');
+    const tp     = resolveTex(it, 'items');
+    const components = {
+      'minecraft:icon':{ texture: it },
+      'minecraft:display_name':{ value: toDisplay(it) },
+      'minecraft:max_stack_size': 64
+    };
+    if(isFood){
+      components['minecraft:food']     = { nutrition:4, saturation_modifier:0.3, can_always_eat:false };
+      components['minecraft:use_duration'] = 32;
+    }
     out.file(BP(`items/${it}.json`), JSON.stringify({
-      format_version:ver,
+      format_version: ver,
       'minecraft:item':{
-        description:{identifier:id,category:'Items'},
-        components:{
-          'minecraft:icon':{texture:it},
-          'minecraft:display_name':{value:toDisplay(it)},
-          'minecraft:max_stack_size':64,
-          ...(isFood ? {
-            'minecraft:food':{nutrition:4,saturation_modifier:0.3,can_always_eat:false},
-            'minecraft:use_duration':32
-          } : {})
-        }
+        description:{ identifier:id, category:'Items' },
+        components
       }
-    },null,2));
-    itemAtlas.texture_data[it] = {textures: tp};
+    }, null, 2));
+    itemAtlas.texture_data[it] = { textures: tp };
     stats.items++;
   }
   if(d.items.length){
-    out.file(RP('textures/item_texture.json'), JSON.stringify(itemAtlas,null,2));
-    log(`Items: ${stats.items}`,'ok');
+    out.file(RP('textures/item_texture.json'), JSON.stringify(itemAtlas, null, 2));
   }
+  log('Items converted: ' + stats.items,'ok');
+  await sleep(10);
 
-  // ── 4. ENTITIES
+  // ─────────────────────────────────────
+  // 4. ENTITIES
+  // ─────────────────────────────────────
   if(doEnt){
-    setProgress(32,'Entities...');logH('ENTITIES');
+    setProgress(32,'Converting entities...'); logH('ENTITIES');
     for(const en of d.entities){
       const id = `${ns}:${en}`;
-      const tp = resolveTex(en,'entity');
+      const tp = resolveTex(en, 'entity');
       out.file(BP(`entities/${en}.json`), JSON.stringify({
         format_version:'1.18.0',
         'minecraft:entity':{
-          description:{identifier:id,is_spawnable:true,is_summonable:true,is_experimental:false},
+          description:{ identifier:id, is_spawnable:true, is_summonable:true, is_experimental:false },
           component_groups:{},
           components:{
-            'minecraft:physics':{has_collision:true,has_gravity:true},
-            'minecraft:health':{value:20,max:20},
-            'minecraft:movement':{value:0.25},
-            'minecraft:collision_box':{width:0.6,height:1.8},
+            'minecraft:physics':{ has_collision:true, has_gravity:true },
+            'minecraft:health':{ value:20, max:20 },
+            'minecraft:movement':{ value:0.25 },
+            'minecraft:collision_box':{ width:0.6, height:1.8 },
             'minecraft:nameable':{},
-            'minecraft:pushable':{is_pushable:true,is_pushable_by_piston:true},
-            'minecraft:behavior.random_stroll':{priority:8,speed_multiplier:1.0},
-            'minecraft:behavior.look_at_player':{priority:7,look_distance:8},
-            'minecraft:behavior.random_look_around':{priority:9}
+            'minecraft:pushable':{ is_pushable:true, is_pushable_by_piston:true },
+            'minecraft:behavior.random_stroll':{ priority:8, speed_multiplier:1.0 },
+            'minecraft:behavior.look_at_player':{ priority:7, look_distance:8 },
+            'minecraft:behavior.random_look_around':{ priority:9 }
           },
           events:{}
         }
-      },null,2));
+      }, null, 2));
       out.file(RP(`entity/${en}.entity.json`), JSON.stringify({
         format_version:'1.10.0',
         'minecraft:client_entity':{
           description:{
-            identifier:id,
-            materials:{default:'entity_alphatest'},
-            textures:{default:tp},
-            geometry:{default:`geometry.${en}`},
+            identifier: id,
+            materials:{ default:'entity_alphatest' },
+            textures:{ default: tp },
+            geometry:{ default:`geometry.${en}` },
             render_controllers:['controller.render.default'],
-            spawn_egg:{base_color:'#606060',overlay_color:'#ff6600'}
+            spawn_egg:{ base_color:'#606060', overlay_color:'#ff6600' }
           }
         }
-      },null,2));
+      }, null, 2));
       stats.entities++;
     }
-    log(`Entities: ${stats.entities}`,'ok');
+    log('Entities converted: ' + stats.entities,'ok');
+    await sleep(10);
   }
 
-  // ── 5. RECIPES
+  // ─────────────────────────────────────
+  // 5. RECIPES
+  // ─────────────────────────────────────
   if(doRec){
-    setProgress(42,'Recipes...');logH('RECIPES');
-    let ok=0,skip=0;
+    setProgress(42,'Converting recipes...'); logH('RECIPES');
+    let recOk = 0, recSkip = 0;
     for(const rpath of d.recipes){
       try{
         const txt = await zip.file(rpath).async('string');
         const jr  = JSON.parse(txt);
         const rn  = safe(rpath.split('/').pop().replace('.json',''));
         const br  = convertRecipe(jr, ns, rn, ver);
-        if(br){ out.file(BP(`recipes/${rn}.json`), JSON.stringify(br,null,2)); ok++; }
-        else skip++;
-      }catch(e){ skip++; }
+        if(br){ out.file(BP(`recipes/${rn}.json`), JSON.stringify(br, null, 2)); recOk++; }
+        else recSkip++;
+      } catch(e){ recSkip++; }
     }
-    stats.recipes = ok;
-    log(`Recipes: ${ok} converted, ${skip} skipped`,'ok');
+    stats.recipes = recOk;
+    log(`Recipes: ${recOk} converted, ${recSkip} skipped`,'ok');
+    await sleep(10);
   }
 
-  // ── 6. TEXTURE COPY
-  setProgress(55,'Textures...');logH('TEXTURES');
-  // Copy all raw textures first
+  // ─────────────────────────────────────
+  // 6. TEXTURES — copy + placeholders
+  // ─────────────────────────────────────
+  setProgress(54,'Copying textures...'); logH('TEXTURES');
   if(doTex){
     for(const tp of d.textures){
-      const lp = tp.toLowerCase();
-      const fn = tp.split('/').pop();
+      const lp   = tp.toLowerCase();
+      const fn   = tp.split('/').pop();
       let dest;
-      if(lp.includes('/block')) dest = RP(`textures/blocks/${fn}`);
-      else if(lp.includes('/item')) dest = RP(`textures/items/${fn}`);
+      if(lp.includes('/block'))       dest = RP(`textures/blocks/${fn}`);
+      else if(lp.includes('/item'))   dest = RP(`textures/items/${fn}`);
       else if(lp.includes('/entity')) dest = RP(`textures/entity/${fn}`);
-      else dest = RP(`textures/misc/${fn}`);
+      else                             dest = RP(`textures/misc/${fn}`);
       if(!scheduledTex.has(dest)){
-        try{ out.file(dest, await zip.file(tp).async('uint8array')); stats.textures++; }catch(e){}
+        try{ out.file(dest, await zip.file(tp).async('uint8array')); stats.textures++; }
+        catch(e){}
       }
     }
   }
-  // Write scheduled textures (atlas-referenced)
-  let placeCount = 0;
+  // Write every atlas-scheduled texture (real file or placeholder)
+  let placeholderCount = 0;
   for(const [dest, src] of scheduledTex.entries()){
     if(src){
-      try{ out.file(dest, await zip.file(src).async('uint8array')); stats.textures++; }
-      catch(e){ out.file(dest, makePNG()); placeCount++; }
+      try{
+        out.file(dest, await zip.file(src).async('uint8array'));
+        stats.textures++;
+      } catch(e){
+        out.file(dest, makePNG(16,16,'#888888'));
+        placeholderCount++;
+      }
     } else {
-      out.file(dest, makePNG());
-      placeCount++;
+      out.file(dest, makePNG(16,16,'#888888'));
+      placeholderCount++;
     }
   }
-  log(`Textures: ${stats.textures} copied, ${placeCount} placeholder(s)`,'ok');
+  log(`Textures: ${stats.textures} copied, ${placeholderCount} placeholder(s) generated`,'ok');
+  await sleep(10);
 
-  // ── 7. SOUNDS
+  // ─────────────────────────────────────
+  // 7. SOUNDS
+  // ─────────────────────────────────────
   if(doSnd){
-    setProgress(66,'Sounds...');logH('SOUNDS');
-    let ok=0;
-    const sdefs = {format_version:'1.14.0',sound_definitions:{}};
+    setProgress(64,'Copying sounds...'); logH('SOUNDS');
+    let sndOk = 0;
+    const sdefs = {
+      format_version:'1.14.0',
+      sound_definitions:{}
+    };
     for(const sp of d.sounds){
       try{
         const fn = sp.split('/').pop();
         out.file(RP(`sounds/custom/${fn}`), await zip.file(sp).async('uint8array'));
         const k = fn.replace(/\.(ogg|mp3|wav)$/i,'');
-        sdefs.sound_definitions[`${ns}.${k}`] = {category:'neutral',sounds:[{name:`sounds/custom/${fn}`,stream:false}]};
-        ok++;
-      }catch(e){}
+        sdefs.sound_definitions[`${ns}.${k}`] = {
+          category:'neutral',
+          sounds:[{ name:`sounds/custom/${fn}`, stream:false }]
+        };
+        sndOk++;
+      } catch(e){}
     }
-    if(ok > 0) out.file(RP('sounds/sound_definitions.json'), JSON.stringify(sdefs,null,2));
-    stats.sounds = ok;
-    log(`Sounds: ${ok}`,'ok');
+    if(sndOk > 0) out.file(RP('sounds/sound_definitions.json'), JSON.stringify(sdefs, null, 2));
+    stats.sounds = sndOk;
+    log('Sounds copied: ' + sndOk,'ok');
+    await sleep(10);
   }
 
-  // ── 8. LOOT TABLES
+  // ─────────────────────────────────────
+  // 8. LOOT TABLES
+  // ─────────────────────────────────────
   if(doLoot){
-    setProgress(72,'Loot tables...');logH('LOOT');
-    let ok=0;
+    setProgress(72,'Converting loot tables...'); logH('LOOT TABLES');
+    let lootOk = 0;
     for(const lp of d.loot){
       try{
-        const j = JSON.parse(await zip.file(lp).async('string'));
-        out.file(BP(`loot_tables/${lp.split('/').pop()}`), JSON.stringify(convertLoot(j,ns),null,2));
-        ok++;
-      }catch(e){}
+        const j   = JSON.parse(await zip.file(lp).async('string'));
+        const fn  = lp.split('/').pop();
+        out.file(BP(`loot_tables/${fn}`), JSON.stringify(convertLoot(j, ns), null, 2));
+        lootOk++;
+      } catch(e){}
     }
-    stats.loot = ok;
-    log(`Loot tables: ${ok}`,'ok');
+    stats.loot = lootOk;
+    log('Loot tables converted: ' + lootOk,'ok');
+    await sleep(10);
   }
 
-  // ── 9. BIOMES
+  // ─────────────────────────────────────
+  // 9. BIOMES
+  // ─────────────────────────────────────
   if(d.biomes.length){
-    setProgress(76,'Biomes...');
+    setProgress(76,'Writing biomes...');
     for(const bm of d.biomes){
       out.file(BP(`biomes/${bm}.json`), JSON.stringify({
         format_version:'1.13.0',
         'minecraft:biome':{
-          description:{identifier:`${ns}:${bm}`},
+          description:{ identifier:`${ns}:${bm}` },
           components:{
-            'minecraft:surface_parameters':{sea_floor_depth:7,sea_floor_material:'minecraft:gravel',foundation_material:'minecraft:stone',mid_material:'minecraft:dirt',top_material:'minecraft:grass'},
-            'minecraft:climate':{temperature:0.5,downfall:0.5,snow_accumulation:[0,0.125]}
+            'minecraft:surface_parameters':{
+              sea_floor_depth:7, sea_floor_material:'minecraft:gravel',
+              foundation_material:'minecraft:stone',
+              mid_material:'minecraft:dirt', top_material:'minecraft:grass'
+            },
+            'minecraft:climate':{ temperature:0.5, downfall:0.5, snow_accumulation:[0,0.125] }
           }
         }
-      },null,2));
+      }, null, 2));
     }
-    log(`Biomes: ${d.biomes.length}`,'ok');
+    log('Biomes written: ' + d.biomes.length,'ok');
   }
 
-  // ── 10. PARTICLES
+  // ─────────────────────────────────────
+  // 10. PARTICLES
+  // ─────────────────────────────────────
   if(d.particles.length){
-    setProgress(80,'Particles...');
+    setProgress(80,'Writing particles...');
     for(const pt of d.particles){
       out.file(RP(`particles/${pt}.json`), JSON.stringify({
         format_version:'1.10.0',
         particle_effect:{
-          description:{identifier:`${ns}:${pt}`,basic_render_parameters:{material:'particles_alpha',texture:'textures/particle/particles'}},
+          description:{
+            identifier:`${ns}:${pt}`,
+            basic_render_parameters:{ material:'particles_alpha', texture:'textures/particle/particles' }
+          },
           components:{
-            'minecraft:emitter_rate_instant':{num_particles:10},
-            'minecraft:emitter_lifetime_once':{active_time:1},
-            'minecraft:emitter_shape_point':{offset:[0,0,0],direction:'outward'},
-            'minecraft:particle_lifetime_expression':{max_lifetime:1.0},
-            'minecraft:particle_appearance_billboard':{size:[0.1,0.1],facing_camera_type:'lookat_xyz',uv:{texture_width:128,texture_height:128,uv:[0,0],uv_size:[8,8]}}
+            'minecraft:emitter_rate_instant':{ num_particles:10 },
+            'minecraft:emitter_lifetime_once':{ active_time:1 },
+            'minecraft:emitter_shape_point':{ offset:[0,0,0], direction:'outward' },
+            'minecraft:particle_lifetime_expression':{ max_lifetime:1.0 },
+            'minecraft:particle_appearance_billboard':{
+              size:[0.1,0.1], facing_camera_type:'lookat_xyz',
+              uv:{ texture_width:128, texture_height:128, uv:[0,0], uv_size:[8,8] }
+            }
           }
         }
-      },null,2));
+      }, null, 2));
     }
-    log(`Particles: ${d.particles.length}`,'ok');
+    log('Particles written: ' + d.particles.length,'ok');
   }
 
-  // ── 11. SCRIPT
+  // ─────────────────────────────────────
+  // 11. SCRIPT API
+  // ─────────────────────────────────────
   if(doScr){
-    setProgress(84,'Script...');logH('SCRIPT');
+    setProgress(85,'Generating Script API...'); logH('SCRIPT API');
     const lines = [
-      `// Java2Bedrock auto-generated script`,
-      `// Namespace: ${ns} | Generated: ${new Date().toISOString()}`,
+      `// Java2Bedrock v2.3 — Auto-generated Script API`,
+      `// Namespace: ${ns}  |  Generated: ${new Date().toISOString()}`,
       `import { world, system, ItemStack } from "@minecraft/server";`,
       ``,
       `world.afterEvents.worldInitialize.subscribe(() => {`,
-      `  console.log("[${ns}] Add-on loaded!");`,
+      `  console.log("[${ns}] Add-on loaded successfully!");`,
       `});`,
       ``
     ];
     if(d.blocks.length){
+      lines.push(`// Block break drop handlers`);
       lines.push(`world.afterEvents.playerBreakBlock.subscribe(ev => {`);
       lines.push(`  const id = ev.block.typeId;`);
-      for(const b of d.blocks.slice(0,15)){
-        lines.push(`  if(id==='${ns}:${b}') ev.player.dimension.spawnItem(new ItemStack('${ns}:${b}',1),ev.block.location);`);
+      for(const b of d.blocks.slice(0,20)){
+        lines.push(`  if(id === '${ns}:${b}') ev.player.dimension.spawnItem(new ItemStack('${ns}:${b}', 1), ev.block.location);`);
       }
-      lines.push(`});`,'');
+      lines.push(`});`);
+      lines.push(``);
     }
     if(d.items.length){
+      lines.push(`// Item use handlers`);
       lines.push(`world.afterEvents.itemUse.subscribe(ev => {`);
       lines.push(`  const id = ev.itemStack.typeId;`);
-      for(const it of d.items.slice(0,15)){
-        lines.push(`  if(id==='${ns}:${it}') ev.source.sendMessage('§b[${ns}] Used: ${toDisplay(it)}');`);
+      for(const it of d.items.slice(0,20)){
+        lines.push(`  if(id === '${ns}:${it}') ev.source.sendMessage('§b[${ns}] Used: ${toDisplay(it)}');`);
       }
-      lines.push(`});`,'');
+      lines.push(`});`);
+      lines.push(``);
     }
-    lines.push(`let _t=0; system.runInterval(()=>_t++,1);`);
+    if(d.entities.length){
+      lines.push(`// Entity spawn handlers`);
+      lines.push(`world.afterEvents.entitySpawn.subscribe(ev => {`);
+      lines.push(`  const id = ev.entity.typeId;`);
+      for(const en of d.entities.slice(0,10)){
+        lines.push(`  if(id === '${ns}:${en}') console.log('[${ns}] Spawned: ${en}');`);
+      }
+      lines.push(`});`);
+      lines.push(``);
+    }
+    lines.push(`// Tick counter`);
+    lines.push(`let _tick = 0;`);
+    lines.push(`system.runInterval(() => { _tick++; }, 1);`);
     out.file(BP('scripts/main.js'), lines.join('\n'));
-    log('Script written','ok');
+    log('Script API generated','ok');
+    await sleep(10);
   }
 
-  // ── 12. PACK ICONS
-  out.file(BP('pack_icon.png'), makePNG(64,64,'#7c3aed'));
-  out.file(RP('pack_icon.png'), makePNG(64,64,'#0ea5e9'));
+  // ─────────────────────────────────────
+  // 12. PACK ICONS
+  // ─────────────────────────────────────
+  out.file(BP('pack_icon.png'), makePNG(64, 64, '#7c3aed'));
+  out.file(RP('pack_icon.png'), makePNG(64, 64, '#0ea5e9'));
+  log('Pack icons generated','ok');
 
-  // ── 13. README
+  // ─────────────────────────────────────
+  // 13. README
+  // ─────────────────────────────────────
   out.file('README.md', [
-    `# ${ns} – Bedrock Add-on`,
-    `Converted by Java2Bedrock v2.2 on ${new Date().toLocaleDateString()}`,
-    ``,`## Install`,
-    `Double-click the .mcaddon file. Minecraft imports both packs automatically.`,
-    ``,`## Contents`,
-    `| Asset | Count |`,`|---|---|`,
-    `| Blocks | ${stats.blocks} |`,`| Items | ${stats.items} |`,
-    `| Entities | ${stats.entities} |`,`| Recipes | ${stats.recipes} |`,
-    `| Textures | ${stats.textures} |`,`| Sounds | ${stats.sounds} |`,
+    `# ${ns} — Bedrock Add-on`,
+    `Converted by Java2Bedrock v2.3 on ${new Date().toLocaleDateString()}`,
+    ``,
+    `## How to Install`,
+    `Double-click the .mcaddon file. Minecraft will import both packs automatically.`,
+    ``,
+    `## Conversion Summary`,
+    `| Asset       | Count |`,
+    `|-------------|-------|`,
+    `| Blocks      | ${stats.blocks} |`,
+    `| Items       | ${stats.items} |`,
+    `| Entities    | ${stats.entities} |`,
+    `| Recipes     | ${stats.recipes} |`,
+    `| Textures    | ${stats.textures} |`,
+    `| Sounds      | ${stats.sounds} |`,
     `| Loot Tables | ${stats.loot} |`,
-    ``,`## Target: Bedrock ${ver}+`
+    ``,
+    `## Known Limitations`,
+    `- Custom Java logic requires manual scripting`,
+    `- Some block states have no Bedrock equivalent`,
+    `- Always test in a flat creative world first`,
+    ``,
+    `## Target: Bedrock Edition ${ver}+`
   ].join('\n'));
 
-  // ── DONE
-  setProgress(100,'Done!');
+  // ─────────────────────────────────────
+  // FINALISE
+  // ─────────────────────────────────────
+  setProgress(100,'Conversion complete!');
   S.outputZip = out;
-  S.ready = true;
+  S.ready     = true;
+
   buildTree(out);
   showSummary(stats, ns, ver);
   setStep(4);
+
   document.getElementById('convert-section').classList.remove('show');
   document.getElementById('download-section').classList.add('show');
-  showAlert('Conversion complete! Download ready.', 'success');
+  showAlert('Conversion complete! Click Download to save your .mcaddon file.','success');
   logH('ALL DONE');
-  log('Click the green Download button.','ok');
+  log('Click the green Download button below.','ok');
 
-  btn.disabled = false;
-  btn.textContent = '⚡ CONVERT TO MCADDON';
+  convertBtn.disabled = false;
+  convertBtn.textContent = '⚡ CONVERT TO MCADDON';
 }
 
-// ═══════════════════════════════
-// DOWNLOAD — fully self-contained, no inline onclick
-// ═══════════════════════════════
+// ═══════════════════════════════════════
+// DOWNLOAD — fixed, robust
+// ═══════════════════════════════════════
 async function downloadAddon(){
-  console.log('[Java2Bedrock] downloadAddon() called');
+  console.log('[Java2Bedrock] downloadAddon() triggered');
 
   const btn = document.getElementById('download-btn');
 
   if(!S.ready || !S.outputZip){
     showAlert('Please convert a mod first!','error');
-    log('Download clicked but nothing converted yet','warn');
+    log('Download attempted before conversion was complete','warn');
     return;
   }
 
   btn.disabled = true;
-  btn.textContent = '⏳ Building...';
-  log('Building .mcaddon archive...','info');
+  btn.textContent = '⏳ Building archive...';
+  log('Generating final .mcaddon zip...','info');
 
-  try {
+  try{
     const blob = await S.outputZip.generateAsync(
-      {type:'blob', compression:'DEFLATE', compressionOptions:{level:6}},
+      { type:'blob', compression:'DEFLATE', compressionOptions:{ level:6 } },
       meta => setProgress(meta.percent, `Compressing... ${Math.round(meta.percent)}%`)
     );
 
-    console.log('[Java2Bedrock] Blob size:', blob.size);
+    console.log('[Java2Bedrock] Blob generated, size:', blob.size);
 
-    const url = URL.createObjectURL(blob);
+    if(blob.size === 0){
+      throw new Error('Generated archive is empty — nothing to download.');
+    }
+
+    const url  = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.href = url;
-    link.download = S.modName + '_bedrock.mcaddon';
+    link.setAttribute('href', url);
+    link.setAttribute('download', S.modName + '_bedrock.mcaddon');
     link.style.display = 'none';
     document.body.appendChild(link);
     link.click();
 
-    // Small delay before cleanup
     setTimeout(() => {
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    }, 3000);
+      try{
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } catch(e){}
+    }, 5000);
 
-    log('Downloaded: ' + link.download + ' (' + fmtSize(blob.size) + ')','ok');
-    showAlert('Downloaded! ' + fmtSize(blob.size),'success');
+    log('Download started: ' + S.modName + '_bedrock.mcaddon (' + fmtSize(blob.size) + ')','ok');
+    showAlert('Downloaded successfully! (' + fmtSize(blob.size) + ')','success');
+    setProgress(100,'Download complete!');
 
   } catch(err){
     console.error('[Java2Bedrock] Download error:', err);
@@ -941,392 +1955,187 @@ async function downloadAddon(){
   }
 }
 
-// ═══════════════════════════════
+// ═══════════════════════════════════════
 // RECIPE CONVERTER
-// ═══════════════════════════════
+// ═══════════════════════════════════════
 function convertRecipe(jr, ns, name, ver){
-  const type = (jr.type||'').toLowerCase();
-  const ri = jr.result;
+  const type       = (jr.type||'').toLowerCase();
+  const ri         = jr.result;
   if(!ri) return null;
   const resultItem = mapItem(ri.item||ri.id||ri, ns);
-  const count = ri.count||1;
-  if(type.includes('crafting_shaped')){
-    const key={};
-    Object.entries(jr.key||{}).forEach(([k,v])=>{ key[k]={item:mapItem(v.item||v.tag||v,ns)}; });
-    return{format_version:ver,'minecraft:recipe_shaped':{description:{identifier:`${ns}:${name}`},tags:['crafting_table'],pattern:jr.pattern||[],key,result:{item:resultItem,count}}};
-  }
-  if(type.includes('crafting_shapeless')){biomes){
-      out.file(BP(`biomes/${bm}.json`),JSON.stringify({
-        format_version:'1.13.0',
-        'minecraft:biome':{
-          description:{identifier:`${ns}:${bm}`},
-          components:{
-            'minecraft:surface_parameters':{
-              sea_floor_depth:7,
-              sea_floor_material:'minecraft:gravel',
-              foundation_material:'minecraft:stone',
-              mid_material:'minecraft:dirt',
-              top_material:'minecraft:grass'
-            },
-            'minecraft:climate':{temperature:0.5,downfall:0.5,snow_accumulation:[0,0.125]},
-            'minecraft:overworld_generation_rules':{
-              hills_transformation:`${ns}:${bm}`,
-              mutate_transformation:`${ns}:${bm}`
-            }
-          }
-        }
-      },null,2));
-    }
-    log(`Biomes: ${d.biomes.length}`,'ok');
-  }
-
-  // ══════════════════════════
-  // 10. PARTICLES
-  // ══════════════════════════
-  if(d.particles.length){
-    setProgress(85,'Particles...');logHead('PARTICLES');
-    for(const pt of d.particles){
-      out.file(RP(`particles/${pt}.json`),JSON.stringify({
-        format_version:'1.10.0',
-        particle_effect:{
-          description:{
-            identifier:`${ns}:${pt}`,
-            basic_render_parameters:{
-              material:'particles_alpha',
-              texture:'textures/particle/particles'
-            }
-          },
-          components:{
-            'minecraft:emitter_rate_instant':{num_particles:10},
-            'minecraft:emitter_lifetime_once':{active_time:1},
-            'minecraft:emitter_shape_point':{offset:[0,0,0],direction:'outward'},
-            'minecraft:particle_initial_speed':5.0,
-            'minecraft:particle_lifetime_expression':{max_lifetime:1.0},
-            'minecraft:particle_appearance_billboard':{
-              size:[0.1,0.1],
-              facing_camera_type:'lookat_xyz',
-              uv:{texture_width:128,texture_height:128,uv:[0,0],uv_size:[8,8]}
-            }
-          }
-        }
-      },null,2));
-    }
-    log(`Particles: ${d.particles.length}`,'ok');
-  }
-
-  // ══════════════════════════
-  // 11. SCRIPT API
-  // ══════════════════════════
-  if(doScr){
-    setProgress(88,'Generating script...');logHead('SCRIPT');
-    const lines=[
-      `// Java2Bedrock – Auto-generated Script API`,
-      `// Mod: ${state.modName}  |  Namespace: ${ns}`,
-      `// Generated: ${new Date().toISOString()}`,
-      `import { world, system, ItemStack } from "@minecraft/server";`,
-      ``,
-      `world.afterEvents.worldInitialize.subscribe(() => {`,
-      `  console.log("[${ns}] Add-on loaded via Java2Bedrock!");`,
-      `});`,
-      ``
-    ];
-
-    if(d.blocks.length){
-      lines.push(`// ── Block break drops`);
-      lines.push(`world.afterEvents.playerBreakBlock.subscribe(ev => {`);
-      lines.push(`  const id = ev.block.typeId;`);
-      for(const b of d.blocks.slice(0,20)){
-        lines.push(`  if(id==="${ ns}:${b}"){`);
-        lines.push(`    ev.player.dimension.spawnItem(new ItemStack("${ns}:${b}",1),ev.block.location);`);
-        lines.push(`  }`);
-      }
-      lines.push(`});`,'');
-    }
-
-    if(d.items.length){
-      lines.push(`// ── Item use handler`);
-      lines.push(`world.afterEvents.itemUse.subscribe(ev => {`);
-      lines.push(`  const id = ev.itemStack.typeId;`);
-      for(const it of d.items.slice(0,20)){
-        lines.push(`  if(id==="${ns}:${it}"){`);
-        lines.push(`    ev.source.sendMessage("§b[${ns}] Used: ${toDisplayName(it)}");`);
-        lines.push(`  }`);
-      }
-      lines.push(`});`,'');
-    }
-
-    if(d.entities.length){
-      lines.push(`// ── Entity spawn handler`);
-      lines.push(`world.afterEvents.entitySpawn.subscribe(ev => {`);
-      lines.push(`  const id = ev.entity.typeId;`);
-      for(const en of d.entities.slice(0,10)){
-        lines.push(`  if(id==="${ns}:${en}") console.log("[${ns}] Spawned: ${en}");`);
-      }
-      lines.push(`});`,'');
-    }
-
-    lines.push(`// ── Tick counter`);
-    lines.push(`let _tick=0;`);
-    lines.push(`system.runInterval(()=>{ _tick++; },1);`);
-
-    out.file(BP('scripts/main.js'),lines.join('\n'));
-    log('Script API generated','ok');
-  }
-
-  // ══════════════════════════
-  // 12. PACK ICON
-  // ══════════════════════════
-  setProgress(90,'Pack icons...');
-  const iconPng=makePlaceholderPNG(64,64,'#7c3aed');
-  out.file(BP('pack_icon.png'),iconPng);
-  out.file(RP('pack_icon.png'),iconPng);
-  log('Pack icons written','ok');
-
-  // ══════════════════════════
-  // 13. README
-  // ══════════════════════════
-  out.file('README.md',[
-    `# ${ns} – Bedrock Add-on`,
-    `Converted by Java2Bedrock v2.1 · ${new Date().toLocaleDateString()}`,
-    ``,
-    `## Install`,
-    `Double-click the .mcaddon file — Minecraft imports both packs automatically.`,
-    ``,
-    `## What was converted`,
-    `| Asset | Count |`,
-    `|---|---|`,
-    `| Blocks    | ${stats.blocks} |`,
-    `| Items     | ${stats.items} |`,
-    `| Entities  | ${stats.entities} |`,
-    `| Recipes   | ${stats.recipes} |`,
-    `| Textures  | ${stats.textures} |`,
-    `| Sounds    | ${stats.sounds} |`,
-    `| Loot Tables | ${stats.loot} |`,
-    ``,
-    `## Known Limitations`,
-    `- Custom Java logic requires manual scripting`,
-    `- Some block states have no Bedrock equivalent`,
-    `- Test in a flat creative world first`,
-    ``,
-    `## Target`,
-    `Bedrock Edition ${ver}+`
-  ].join('\n'));
-
-  // ══════════════════════════
-  // 14. FINALISE
-  // ══════════════════════════
-  setProgress(95,'Packaging...');logHead('DONE');
-  state.outputZip=out;
-  state.conversionDone=true;
-  buildFileTree(out);
-  showSummary(stats,ns,ver);
-  setProgress(100,'Complete!');
-  setStep(4);
-  document.getElementById('convert-section').classList.remove('show');
-  document.getElementById('download-section').classList.add('show');
-  showAlert('Conversion complete! Download your .mcaddon below.','success');
-  log('All done! No pink textures — every atlas entry has a backing file.','ok');
-  btn.disabled=false;btn.textContent='⚡ CONVERT TO MCADDON';
-}
-
-// ══════════════════════════════════════════════════
-// RECIPE CONVERTER
-// ══════════════════════════════════════════════════
-function convertRecipe(jr,ns,name,ver){
-  const type=(jr.type||'').toLowerCase();
-  const ri=jr.result;
-  if(!ri)return null;
-  const resultItem=mapItem(ri.item||ri.id||ri,ns);
-  const count=ri.count||1;
+  const count      = ri.count || 1;
 
   if(type.includes('crafting_shaped')){
-    const key={};
-    Object.entries(jr.key||{}).forEach(([k,v])=>{
-      key[k]={item:mapItem(v.item||v.tag||v,ns)};
+    const key = {};
+    Object.entries(jr.key||{}).forEach(([k,v]) => {
+      key[k] = { item: mapItem(v.item||v.tag||v, ns) };
     });
-    return{
-      format_version:ver,
+    return {
+      format_version: ver,
       'minecraft:recipe_shaped':{
-        description:{identifier:`${ns}:${name}`},
+        description:{ identifier:`${ns}:${name}` },
         tags:['crafting_table'],
-        pattern:jr.pattern||[],
+        pattern: jr.pattern || [],
         key,
-        result:{item:resultItem,count}
+        result:{ item:resultItem, count }
       }
     };
   }
   if(type.includes('crafting_shapeless')){
-    return{
-      format_version:ver,
+    return {
+      format_version: ver,
       'minecraft:recipe_shapeless':{
-        description:{identifier:`${ns}:${name}`},
+        description:{ identifier:`${ns}:${name}` },
         tags:['crafting_table'],
-        ingredients:(jr.ingredients||[]).map(i=>({item:mapItem(i.item||i.tag||i,ns)})),
-        result:{item:resultItem,count}
+        ingredients:(jr.ingredients||[]).map(i => ({ item:mapItem(i.item||i.tag||i, ns) })),
+        result:{ item:resultItem, count }
       }
     };
   }
   if(type.includes('smelting')||type.includes('blasting')||type.includes('smoking')){
-    const tags=type.includes('blast')?['blast_furnace']:type.includes('smok')?['smoker']:['furnace'];
-    const ing=jr.ingredient||(jr.ingredients&&jr.ingredients[0])||{};
-    return{
-      format_version:ver,
+    const tags = type.includes('blast') ? ['blast_furnace'] : type.includes('smok') ? ['smoker'] : ['furnace'];
+    const ing  = jr.ingredient || (jr.ingredients && jr.ingredients[0]) || {};
+    return {
+      format_version: ver,
       'minecraft:recipe_furnace':{
-        description:{identifier:`${ns}:${name}`},
+        description:{ identifier:`${ns}:${name}` },
         tags,
-        input:mapItem(ing.item||ing.tag||ing,ns),
-        output:resultItem
+        input:  mapItem(ing.item||ing.tag||ing, ns),
+        output: resultItem
       }
     };
   }
   if(type.includes('stonecutting')){
-    const ing=jr.ingredient||{};
-    return{
-      format_version:ver,
+    const ing = jr.ingredient || {};
+    return {
+      format_version: ver,
       'minecraft:recipe_shapeless':{
-        description:{identifier:`${ns}:${name}`},
+        description:{ identifier:`${ns}:${name}` },
         tags:['stonecutter'],
-        ingredients:[{item:mapItem(ing.item||ing.tag||ing,ns)}],
-        result:{item:resultItem,count}
+        ingredients:[{ item:mapItem(ing.item||ing.tag||ing, ns) }],
+        result:{ item:resultItem, count }
       }
     };
   }
   return null;
 }
 
-// ══════════════════════════════════════════════════
+// ═══════════════════════════════════════
 // LOOT TABLE CONVERTER
-// ══════════════════════════════════════════════════
-function convertLootTable(jlt,ns){
-  const out={pools:[]};
-  for(const pool of(jlt.pools||[])){
-    const entries=(pool.entries||[]).map(e=>{
-      const t=e.type||'';
-      if(t.includes('item')||t===''){
-        return{type:'item',name:mapItem(e.name||e.id||'air',ns),weight:e.weight||1};
+// ═══════════════════════════════════════
+function convertLoot(jlt, ns){
+  const out = { pools:[] };
+  for(const pool of (jlt.pools||[])){
+    const entries = (pool.entries||[]).map(e => {
+      const t = (e.type||'').toLowerCase();
+      if(t.includes('item') || t === ''){
+        return { type:'item', name:mapItem(e.name||e.id||'air', ns), weight:e.weight||1 };
       }
       return null;
     }).filter(Boolean);
     if(entries.length){
-      const rolls=typeof pool.rolls==='object'
-        ?{min:pool.rolls.min||1,max:pool.rolls.max||1}
-        :(pool.rolls||1);
-      out.pools.push({rolls,entries});
+      const rolls = (typeof pool.rolls === 'object')
+        ? { min:pool.rolls.min||1, max:pool.rolls.max||1 }
+        : (pool.rolls || 1);
+      out.pools.push({ rolls, entries });
     }
   }
   return out;
 }
 
-// ══════════════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════════════
-function mapItem(id,ns){
-  if(!id)return`${ns}:unknown`;
-  const s=String(id);
-  if(s.startsWith('minecraft:'))return s;
-  if(s.includes(':'))return s;
-  return`${ns}:${safe(s)}`;
+// ═══════════════════════════════════════
+// ITEM ID MAPPER  Java → Bedrock
+// ═══════════════════════════════════════
+function mapItem(id, ns){
+  if(!id) return `${ns}:unknown`;
+  const s = String(id);
+  if(s.startsWith('minecraft:')) return s;
+  if(s.includes(':'))             return s;
+  return `${ns}:${safe(s)}`;
 }
 
-function toDisplayName(id){
-  return String(id)
-    .replace(/_/g,' ')
-    .replace(/\b\w/g,c=>c.toUpperCase());
-}
-
-// ══════════════════════════════════════════════════
+// ═══════════════════════════════════════
 // PLACEHOLDER PNG GENERATOR
-// Generates a real 16×16 (or custom size) solid-colour
-// PNG entirely in JavaScript — NO external deps.
-// This is what prevents pink textures when no source
-// texture exists in the mod archive.
-// ══════════════════════════════════════════════════
-function makePlaceholderPNG(w=16,h=16,hexColor='#888888'){
-  // Parse colour
-  const hex=hexColor.replace('#','');
-  const r=parseInt(hex.slice(0,2),16)||136;
-  const g=parseInt(hex.slice(2,4),16)||136;
-  const b=parseInt(hex.slice(4,6),16)||136;
+// Pure JS — no canvas, no external libs.
+// Produces a valid PNG so atlas entries
+// always have a backing file and Bedrock
+// never renders pink/magenta textures.
+// ═══════════════════════════════════════
+function makePNG(w=16, h=16, hex='#888888'){
+  hex = hex.replace('#','');
+  const r = parseInt(hex.slice(0,2),16)||136;
+  const g = parseInt(hex.slice(2,4),16)||136;
+  const b = parseInt(hex.slice(4,6),16)||136;
 
-  // Build raw RGBA scanlines
-  const scanline=new Uint8Array(1+w*4); // filter byte + RGBA*w
-  scanline[0]=0; // filter type None
-  for(let x=0;x<w;x++){
-    scanline[1+x*4]=r;
-    scanline[1+x*4+1]=g;
-    scanline[1+x*4+2]=b;
-    scanline[1+x*4+3]=255;
+  // Raw RGBA scanlines with filter byte 0 (None) per row
+  const raw = new Uint8Array(h * (1 + w*4));
+  for(let y=0; y<h; y++){
+    const base = y*(1+w*4);
+    raw[base] = 0;
+    for(let x=0; x<w; x++){
+      raw[base+1+x*4]   = r;
+      raw[base+1+x*4+1] = g;
+      raw[base+1+x*4+2] = b;
+      raw[base+1+x*4+3] = 255;
+    }
   }
-  const raw=new Uint8Array(h*(1+w*4));
-  for(let y=0;y<h;y++)raw.set(scanline,y*(1+w*4));
 
-  // Deflate (uncompressed store block — always valid)
-  const compressed=deflateStore(raw);
+  const idat = zlibStore(raw);
 
-  // PNG chunks
-  function chunk(type,data){
-    const len=data.length;
-    const buf=new Uint8Array(12+len);
-    const dv=new DataView(buf.buffer);
-    dv.setUint32(0,len);
-    for(let i=0;i<4;i++)buf[4+i]=type.charCodeAt(i);
-    buf.set(data,8);
-    const crc=crc32(buf.subarray(4,8+len));
-    dv.setUint32(8+len,crc);
+  function mkChunk(type, data){
+    const buf = new Uint8Array(12 + data.length);
+    const dv  = new DataView(buf.buffer);
+    dv.setUint32(0, data.length);
+    for(let i=0;i<4;i++) buf[4+i] = type.charCodeAt(i);
+    buf.set(data, 8);
+    dv.setUint32(8+data.length, crc32(buf.subarray(4, 8+data.length)));
     return buf;
   }
 
-  // IHDR
-  const ihdr=new Uint8Array(13);
-  const idv=new DataView(ihdr.buffer);
-  idv.setUint32(0,w);idv.setUint32(4,h);
-  ihdr[8]=8;ihdr[9]=2;ihdr[10]=0;ihdr[11]=0;ihdr[12]=0;
+  const ihdr = new Uint8Array(13);
+  const idv  = new DataView(ihdr.buffer);
+  idv.setUint32(0,w); idv.setUint32(4,h);
+  ihdr[8]=8; ihdr[9]=2; ihdr[10]=0; ihdr[11]=0; ihdr[12]=0;
 
-  const sig=new Uint8Array([137,80,78,71,13,10,26,10]);
-  const ihdrChunk=chunk('IHDR',ihdr);
-  const idatChunk=chunk('IDAT',compressed);
-  const iendChunk=chunk('IEND',new Uint8Array(0));
-
-  const total=sig.length+ihdrChunk.length+idatChunk.length+iendChunk.length;
-  const png=new Uint8Array(total);
-  let off=0;
-  [sig,ihdrChunk,idatChunk,iendChunk].forEach(a=>{png.set(a,off);off+=a.length;});
+  const sig  = new Uint8Array([137,80,78,71,13,10,26,10]);
+  const c1   = mkChunk('IHDR', ihdr);
+  const c2   = mkChunk('IDAT', idat);
+  const c3   = mkChunk('IEND', new Uint8Array(0));
+  const png  = new Uint8Array(sig.length + c1.length + c2.length + c3.length);
+  let off    = 0;
+  [sig,c1,c2,c3].forEach(a => { png.set(a,off); off+=a.length; });
   return png;
 }
 
-// Deflate store (no compression) — wraps raw bytes in a valid zlib+deflate envelope
-function deflateStore(data){
-  const CHUNK=65535;
-  const blocks=Math.ceil(data.length/CHUNK)||1;
-  const out=new Uint8Array(2+data.length+blocks*5+4);
-  let op=0;
-  // zlib header CMF=0x78 FLG=0x01
-  out[op++]=0x78;out[op++]=0x01;
-  let adler=1,s1=1,s2=0;
-  for(let i=0;i<data.length;i+=CHUNK){
-    const slice=data.subarray(i,i+CHUNK);
-    const last=i+CHUNK>=data.length?1:0;
+// Zlib store — uncompressed but fully valid deflate envelope
+function zlibStore(data){
+  const CHUNK   = 65535;
+  const nBlocks = Math.ceil(data.length / CHUNK) || 1;
+  const out     = new Uint8Array(2 + data.length + nBlocks*5 + 4);
+  let op=0, s1=1, s2=0;
+  out[op++]=0x78; out[op++]=0x01;
+  for(let i=0; i<data.length; i+=CHUNK){
+    const sl   = data.subarray(i, i+CHUNK);
+    const last = (i+CHUNK >= data.length) ? 1 : 0;
+    const len  = sl.length;
     out[op++]=last;
-    const len=slice.length;
-    out[op++]=len&0xff;out[op++]=(len>>8)&0xff;
-    out[op++]=(~len)&0xff;out[op++]=((~len)>>8)&0xff;
-    out.set(slice,op);op+=slice.length;
-    for(let j=0;j<slice.length;j++){
-      s1=(s1+slice[j])%65521;s2=(s2+s1)%65521;
-    }
+    out[op++]=len&0xff;   out[op++]=(len>>8)&0xff;
+    out[op++]=(~len)&0xff; out[op++]=((~len)>>8)&0xff;
+    out.set(sl, op); op+=len;
+    for(let j=0;j<len;j++){ s1=(s1+sl[j])%65521; s2=(s2+s1)%65521; }
   }
-  adler=(s2<<16)|s1;
-  out[op++]=(adler>>24)&0xff;out[op++]=(adler>>16)&0xff;
-  out[op++]=(adler>>8)&0xff;out[op++]=adler&0xff;
+  const adler=(s2<<16)|s1;
+  out[op++]=(adler>>24)&0xff; out[op++]=(adler>>16)&0xff;
+  out[op++]=(adler>>8)&0xff;  out[op++]=adler&0xff;
   return out.subarray(0,op);
 }
 
-// CRC32 table
-const CRC_TABLE=(()=>{
-  const t=new Uint32Array(256);
+// CRC32 lookup table
+const CRC_TABLE = (()=>{
+  const t = new Uint32Array(256);
   for(let i=0;i<256;i++){
     let c=i;
-    for(let j=0;j<8;j++)c=c&1?(0xedb88320^(c>>>1)):(c>>>1);
+    for(let j=0;j<8;j++) c = c&1 ? (0xedb88320^(c>>>1)) : (c>>>1);
     t[i]=c;
   }
   return t;
@@ -1334,104 +2143,83 @@ const CRC_TABLE=(()=>{
 
 function crc32(buf){
   let c=0xffffffff;
-  for(let i=0;i<buf.length;i++)c=CRC_TABLE[(c^buf[i])&0xff]^(c>>>8);
-  return(c^0xffffffff)>>>0;
+  for(let i=0;i<buf.length;i++) c=CRC_TABLE[(c^buf[i])&0xff]^(c>>>8);
+  return (c^0xffffffff)>>>0;
 }
 
-// ══════════════════════════════════════════════════
-// DOWNLOAD
-// ══════════════════════════════════════════════════
-async function downloadAddon(){
-  if(!state.outputZip||!state.conversionDone){
-    showAlert('Convert a mod first!','error');return;
-  }
-  const btn=document.getElementById('download-btn')||document.querySelector('.download-btn');
-  btn.textContent='⏳ Preparing...';btn.disabled=true;
-  try{
-    log('Compressing final .mcaddon...','info');
-    const blob=await state.outputZip.generateAsync(
-      {type:'blob',compression:'DEFLATE',compressionOptions:{level:6}},
-      meta=>setProgress(meta.percent,`Compressing ${Math.round(meta.percent)}%`)
-    );
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url;a.download=`${state.modName}_bedrock.mcaddon`;
-    document.body.appendChild(a);a.click();
-    document.body.removeChild(a);
-    setTimeout(()=>URL.revokeObjectURL(url),5000);
-    log(`Downloaded: ${state.modName}_bedrock.mcaddon (${fmtSize(blob.size)})`,'ok');
-    showAlert(`Downloaded! ${fmtSize(blob.size)}`,'success');
-  }catch(e){
-    log('Download error: '+e.message,'err');
-    showAlert('Download failed: '+e.message,'error');
-  }finally{
-    btn.textContent='⬇ DOWNLOAD .mcaddon';btn.disabled=false;
-  }
-}
+// ═══════════════════════════════════════
+// FILE TREE RENDERER
+// ═══════════════════════════════════════
+function buildTree(zip){
+  const el    = document.getElementById('file-tree');
+  const files = Object.keys(zip.files).filter(f => !zip.files[f].dir).sort();
+  if(!files.length){ el.innerHTML='<span style="color:var(--border)">[Empty]</span>'; return; }
 
-// ══════════════════════════════════════════════════
-// FILE TREE
-// ══════════════════════════════════════════════════
-function buildFileTree(zip){
-  const el=document.getElementById('file-tree');
-  const files=Object.keys(zip.files).filter(f=>!zip.files[f].dir).sort();
-  if(!files.length){el.innerHTML='<div style="color:var(--border)">[Empty]</div>';return;}
-  const tree={};
-  files.forEach(f=>{
-    const parts=f.split('/');let node=tree;
-    parts.forEach((p,i)=>{
-      if(i===parts.length-1)node[p]='file';
-      else{node[p]=node[p]||{};node=node[p];}
+  const tree = {};
+  files.forEach(f => {
+    const parts = f.split('/');
+    let node    = tree;
+    parts.forEach((p,i) => {
+      if(i === parts.length-1) node[p]='file';
+      else{ node[p]=node[p]||{}; node=node[p]; }
     });
   });
-  el.innerHTML=renderTree(tree,'');
+  el.innerHTML = renderTree(tree,'');
 }
-function renderTree(node,indent){
-  let h='';
-  const keys=Object.keys(node).sort((a,b)=>{
-    const ad=typeof node[a]==='object',bd=typeof node[b]==='object';
-    if(ad&&!bd)return-1;if(!ad&&bd)return 1;return a.localeCompare(b);
+
+function renderTree(node, indent){
+  let h    = '';
+  const keys = Object.keys(node).sort((a,b) => {
+    const ad = typeof node[a]==='object';
+    const bd = typeof node[b]==='object';
+    if(ad&&!bd) return -1;
+    if(!ad&&bd) return  1;
+    return a.localeCompare(b);
   });
   for(const k of keys){
     if(typeof node[k]==='object'){
-      h+=`<div style="color:var(--cyan)">${indent}📁 ${k}/</div>`;
-      h+=renderTree(node[k],indent+'&nbsp;&nbsp;&nbsp;');
-    }else{
-      const ext=k.split('.').pop();
-      const ic=ext==='json'?'📄':ext==='png'?'🖼️':ext==='js'?'📜':ext==='ogg'?'🔊':'📃';
-      h+=`<div style="color:var(--muted)">${indent}${ic} ${k}</div>`;
+      h += `<div style="color:var(--cyan)">${indent}📁 ${escH(k)}/</div>`;
+      h += renderTree(node[k], indent+'&nbsp;&nbsp;&nbsp;');
+    } else {
+      const ext = k.split('.').pop().toLowerCase();
+      const ic  = ext==='json'?'📄':ext==='png'?'🖼️':ext==='js'?'📜':ext==='md'?'📝':(ext==='ogg'||ext==='mp3')?'🔊':'📃';
+      h += `<div style="color:var(--muted)">${indent}${ic} ${escH(k)}</div>`;
     }
   }
   return h;
 }
 
-// ══════════════════════════════════════════════════
-// SUMMARY
-// ══════════════════════════════════════════════════
-function showSummary(stats,ns,ver){
-  document.getElementById('summary-panel').style.display='block';
-  const rows=[
-    ['🧱 Blocks',stats.blocks],['⚔️ Items',stats.items],
-    ['👾 Entities',stats.entities],['📜 Recipes',stats.recipes],
-    ['🖼️ Textures',stats.textures],['🔊 Sounds',stats.sounds],
-    ['🗺️ Loot Tables',stats.loot]
+// ═══════════════════════════════════════
+// SUMMARY PANEL
+// ═══════════════════════════════════════
+function showSummary(stats, ns, ver){
+  document.getElementById('summary-panel').style.display = 'block';
+  const rows = [
+    ['🧱 Blocks',    stats.blocks],
+    ['⚔️ Items',     stats.items],
+    ['👾 Entities',  stats.entities],
+    ['📜 Recipes',   stats.recipes],
+    ['🖼️ Textures',  stats.textures],
+    ['🔊 Sounds',    stats.sounds],
+    ['🗺️ Loot Tables', stats.loot]
   ];
-  document.getElementById('summary-content').innerHTML=`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
-      ${rows.map(([l,v])=>`
-        <div style="background:var(--bg3);padding:8px 12px;border-radius:6px;border:1px solid var(--border);
-          display:flex;justify-content:space-between;align-items:center;">
-          <span style="color:var(--muted);font-size:0.82rem;">${l}</span>
-          <span style="color:${v>0?'var(--cyan)':'var(--muted)'};font-weight:800;">${v}</span>
-        </div>`).join('')}
-    </div>
-    <div style="background:rgba(0,255,136,0.05);border:1px solid var(--green);
-      border-radius:8px;padding:12px;color:var(--green);font-size:0.85rem;">
-      ✓ <strong>${ns}</strong> · Bedrock <strong>${ver}</strong> ·
-      <strong>${Object.values(stats).reduce((a,b)=>a+b,0)}</strong> total assets ·
-      <strong>0 pink textures</strong> (placeholders generated for missing textures)
+  document.getElementById('summary-grid').innerHTML = rows.map(([label,val]) => `
+    <div class="summary-item">
+      <span style="color:var(--muted)">${label}</span>
+      <span class="summary-val" style="${val===0?'color:var(--muted)':''}">${val}</span>
+    </div>`).join('');
+
+  const total = Object.values(stats).reduce((a,b)=>a+b, 0);
+  document.getElementById('summary-footer').innerHTML = `
+    <div style="background:rgba(0,255,136,0.06);border:1px solid var(--green);
+      border-radius:8px;padding:10px 14px;color:var(--green);font-size:0.82rem;">
+      ✓ &nbsp;Namespace: <strong>${escH(ns)}</strong>
+      &nbsp;·&nbsp; Target: <strong>Bedrock ${escH(ver)}</strong>
+      &nbsp;·&nbsp; <strong>${total}</strong> total assets
+      &nbsp;·&nbsp; <strong>0 pink textures</strong>
     </div>`;
 }
+
 </script>
 </body>
 </html>
