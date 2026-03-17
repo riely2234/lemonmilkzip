@@ -344,14 +344,14 @@ const S = {
     blocks:[], items:[], entities:[], recipes:[],
     textures:[], sounds:[], biomes:[], particles:[], food:[], loot:[]
   },
-  textureMap : {},   // safeName → archivePath
+  textureMap : {},
   outputZip  : null,
   modName    : 'mod',
   ready      : false
 };
 
 /* ════════════════════════════════════════════
-   PARTICLES (background decoration)
+   BACKGROUND PARTICLES
 ════════════════════════════════════════════ */
 (function spawnParticles(){
   const c = document.getElementById('particles');
@@ -390,8 +390,8 @@ document.getElementById('clear-log-btn').addEventListener('click', () => {
 /* ════════════════════════════════════════════
    DRAG & DROP + FILE INPUT
 ════════════════════════════════════════════ */
-const dz   = document.getElementById('dropzone');
-const fIn  = document.getElementById('fileInput');
+const dz  = document.getElementById('dropzone');
+const fIn = document.getElementById('fileInput');
 
 dz.addEventListener('click', () => fIn.click());
 document.getElementById('browse-btn').addEventListener('click', e => {
@@ -410,7 +410,7 @@ fIn.addEventListener('change', e => {
 });
 
 /* ════════════════════════════════════════════
-   MAIN ACTION BUTTONS  (addEventListener only)
+   MAIN ACTION BUTTONS
 ════════════════════════════════════════════ */
 document.getElementById('convert-btn') .addEventListener('click', startConversion);
 document.getElementById('download-btn').addEventListener('click', downloadAddon);
@@ -425,9 +425,9 @@ function uuid(){
   });
 }
 function fmtSize(b){
-  if(b < 1024)     return b + ' B';
-  if(b < 1048576)  return (b/1024).toFixed(1)    + ' KB';
-  return               (b/1048576).toFixed(2)  + ' MB';
+  if(b < 1024)    return b + ' B';
+  if(b < 1048576) return (b/1024).toFixed(1)   + ' KB';
+  return               (b/1048576).toFixed(2) + ' MB';
 }
 function safe(s){
   return String(s).toLowerCase()
@@ -442,6 +442,7 @@ function escH(s){
   return String(s)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
 function isOn(id){ return document.getElementById(id).classList.contains('on'); }
 
 /* ════════════════════════════════════════════
@@ -493,6 +494,7 @@ function setStat(id, v){
 function setStep(n){
   for(let i = 1; i <= 4; i++){
     const el = document.getElementById('step' + i);
+    if(!el) continue;
     el.classList.remove('active','done');
     if(i < n)      el.classList.add('done');
     else if(i===n) el.classList.add('active');
@@ -513,7 +515,6 @@ async function handleFile(file){
   S.outputZip  = null;
   S.textureMap = {};
 
-  // Reset UI
   document.getElementById('file-name').textContent = file.name;
   document.getElementById('file-size').textContent = fmtSize(file.size);
   document.getElementById('file-info').classList.add('show');
@@ -556,7 +557,6 @@ async function scanMod(zip){
   Object.keys(d).forEach(k => d[k] = []);
   S.textureMap = {};
 
-  // Detect mod loader
   if(S.allFiles.some(f => f.includes('META-INF/neoforge.mods.toml')))      log('Detected loader: NeoForge');
   else if(S.allFiles.some(f => f.includes('fabric.mod.json')))              log('Detected loader: Fabric');
   else if(S.allFiles.some(f => f.includes('META-INF/mods.toml')))           log('Detected loader: Forge');
@@ -568,40 +568,30 @@ async function scanMod(zip){
     const name  = fname.replace(/\.\w+$/,'');
     if(!name || zip.files[path].dir) continue;
 
-    // Textures
     if(/\.(png|jpg|jpeg)$/i.test(lp)){
       d.textures.push(path);
       const k = safe(name);
       if(!S.textureMap[k]) S.textureMap[k] = path;
-      // Also index stripped variants
       const stripped = k.replace(/_(block|item|tex|texture)$/,'');
       if(!S.textureMap[stripped]) S.textureMap[stripped] = path;
     }
-    // Blocks
     if((lp.includes('/blockstates/') || lp.includes('/blocks/')) && lp.endsWith('.json')){
       const n = safe(name); if(n && !d.blocks.includes(n)) d.blocks.push(n);
     }
-    // Items
     if((lp.includes('/items/') || lp.includes('models/item/')) && lp.endsWith('.json')){
       const n = safe(name); if(n && !d.items.includes(n)) d.items.push(n);
     }
-    // Entities
     if((lp.includes('/entity/') || lp.includes('/entities/')) && lp.endsWith('.json')){
       const n = safe(name); if(n && !d.entities.includes(n)) d.entities.push(n);
     }
-    // Recipes
     if(lp.includes('/recipes/') && lp.endsWith('.json')) d.recipes.push(path);
-    // Sounds
     if(/\.(ogg|mp3|wav)$/i.test(lp)) d.sounds.push(path);
-    // Biomes
     if(lp.includes('/biomes/') && lp.endsWith('.json')){
       const n = safe(name); if(n && !d.biomes.includes(n)) d.biomes.push(n);
     }
-    // Particles
     if(lp.includes('/particles/') && lp.endsWith('.json')){
       const n = safe(name); if(n && !d.particles.includes(n)) d.particles.push(n);
     }
-    // Loot tables
     if(lp.includes('/loot_tables/') && lp.endsWith('.json')) d.loot.push(path);
   }
 
@@ -638,25 +628,24 @@ async function scanMod(zip){
     }catch(e){}
   }
 
-  // Update UI badges and stats
   const map = [
-    ['blocks',d.blocks.length,'blocks'],
-    ['items',d.items.length,'items'],
-    ['entities',d.entities.length,'entities'],
-    ['recipes',d.recipes.length,'recipes'],
-    ['textures',d.textures.length,'textures'],
-    ['sounds',d.sounds.length,'sounds'],
-    ['biomes',d.biomes.length,null],
+    ['blocks',   d.blocks.length,   'blocks'],
+    ['items',    d.items.length,    'items'],
+    ['entities', d.entities.length, 'entities'],
+    ['recipes',  d.recipes.length,  'recipes'],
+    ['textures', d.textures.length, 'textures'],
+    ['sounds',   d.sounds.length,   'sounds'],
+    ['biomes',   d.biomes.length,   null],
     ['particles',d.particles.length,null],
-    ['food',d.food.length,null],
-    ['loot',d.loot.length,null]
+    ['food',     d.food.length,     null],
+    ['loot',     d.loot.length,     null]
   ];
   map.forEach(([bid,count,sid]) => {
     setBadge(bid,count);
     if(sid) setStat(sid,count);
   });
 
-  log('Scan complete — Blocks:'+d.blocks.length+' Items:'+d.items.length+
+  log('Scan — Blocks:'+d.blocks.length+' Items:'+d.items.length+
       ' Entities:'+d.entities.length+' Recipes:'+d.recipes.length,'ok');
   log('Textures:'+d.textures.length+' Sounds:'+d.sounds.length+
       ' Biomes:'+d.biomes.length+' Particles:'+d.particles.length,'ok');
@@ -708,10 +697,10 @@ async function runConversion(){
   const RP = p => `resource_pack/${p}`;
 
   const stats = { blocks:0, items:0, entities:0, recipes:0, textures:0, sounds:0, loot:0 };
-  // scheduledTex maps   destPath → srcArchivePath|null
   const scheduledTex = new Map();
 
   logH('CONVERSION  ns=' + ns + '  target=' + ver);
+  await sleep(10);
 
   /* ── Texture resolver ── */
   function resolveTex(name, category){
@@ -723,12 +712,10 @@ async function runConversion(){
     }
     const destFile = RP(`textures/${category}/${k}.png`);
     if(!scheduledTex.has(destFile)) scheduledTex.set(destFile, src);
-    return `textures/${category}/${k}`;  // atlas key (no .png)
+    return `textures/${category}/${k}`;
   }
 
-  /* ──────────────────────────────────────
-     1. MANIFESTS
-  ────────────────────────────────────── */
+  /* ── 1. MANIFESTS ── */
   setProgress(5,'Writing manifests...');
   const bpUUID = uuid(), rpUUID = uuid();
 
@@ -766,9 +753,7 @@ async function runConversion(){
   }, null, 2));
   log('Manifests written','ok');
 
-  /* ──────────────────────────────────────
-     2. BLOCKS
-  ────────────────────────────────────── */
+  /* ── 2. BLOCKS ── */
   setProgress(10,'Converting blocks...');
   logH('BLOCKS');
   const terrainTex = {
@@ -806,10 +791,9 @@ async function runConversion(){
     out.file(RP('blocks.json'), JSON.stringify(blocksJson, null, 2));
   }
   log(`Blocks: ${stats.blocks}`,'ok');
+  await sleep(10);
 
-  /* ──────────────────────────────────────
-     3. ITEMS
-  ────────────────────────────────────── */
+  /* ── 3. ITEMS ── */
   setProgress(20,'Converting items...');
   logH('ITEMS');
   const itemAtlas = {
@@ -841,10 +825,9 @@ async function runConversion(){
     out.file(RP('textures/item_texture.json'), JSON.stringify(itemAtlas, null, 2));
   }
   log(`Items: ${stats.items}`,'ok');
+  await sleep(10);
 
-  /* ──────────────────────────────────────
-     4. ENTITIES
-  ────────────────────────────────────── */
+  /* ── 4. ENTITIES ── */
   if(doEnt){
     setProgress(30,'Converting entities...');
     logH('ENTITIES');
@@ -889,11 +872,10 @@ async function runConversion(){
       stats.entities++;
     }
     log(`Entities: ${stats.entities}`,'ok');
+    await sleep(10);
   }
 
-  /* ──────────────────────────────────────
-     5. RECIPES
-  ────────────────────────────────────── */
+  /* ── 5. RECIPES ── */
   if(doRec){
     setProgress(40,'Converting recipes...');
     logH('RECIPES');
@@ -910,15 +892,12 @@ async function runConversion(){
     }
     stats.recipes = ok;
     log(`Recipes: ${ok} converted, ${skip} skipped`,'ok');
+    await sleep(10);
   }
 
-  /* ──────────────────────────────────────
-     6. TEXTURES
-  ────────────────────────────────────── */
+  /* ── 6. TEXTURES ── */
   setProgress(52,'Copying textures...');
   logH('TEXTURES');
-
-  // Pass A — copy every raw texture that isn't already scheduled
   if(doTex){
     for(const tp of d.textures){
       const lp   = tp.toLowerCase();
@@ -936,8 +915,6 @@ async function runConversion(){
       }
     }
   }
-
-  // Pass B — write every atlas-referenced texture (real or placeholder)
   let placeholders = 0;
   for(const [dest, src] of scheduledTex.entries()){
     if(src){
@@ -954,10 +931,9 @@ async function runConversion(){
     }
   }
   log(`Textures: ${stats.textures} copied, ${placeholders} placeholder(s) generated`,'ok');
+  await sleep(10);
 
-  /* ──────────────────────────────────────
-     7. SOUNDS
-  ────────────────────────────────────── */
+  /* ── 7. SOUNDS ── */
   if(doSnd && d.sounds.length){
     setProgress(65,'Copying sounds...');
     logH('SOUNDS');
@@ -978,11 +954,10 @@ async function runConversion(){
     if(ok) out.file(RP('sounds/sound_definitions.json'), JSON.stringify(sdefs, null, 2));
     stats.sounds = ok;
     log(`Sounds: ${ok}`,'ok');
+    await sleep(10);
   }
 
-  /* ──────────────────────────────────────
-     8. LOOT TABLES
-  ────────────────────────────────────── */
+  /* ── 8. LOOT TABLES ── */
   if(doLoot && d.loot.length){
     setProgress(72,'Converting loot tables...');
     logH('LOOT TABLES');
@@ -997,11 +972,10 @@ async function runConversion(){
     }
     stats.loot = ok;
     log(`Loot tables: ${ok}`,'ok');
+    await sleep(10);
   }
 
-  /* ──────────────────────────────────────
-     9. BIOMES
-  ────────────────────────────────────── */
+  /* ── 9. BIOMES ── */
   if(d.biomes.length){
     setProgress(77,'Writing biomes...');
     for(const bm of d.biomes){
@@ -1025,9 +999,7 @@ async function runConversion(){
     log(`Biomes: ${d.biomes.length}`,'ok');
   }
 
-  /* ──────────────────────────────────────
-     10. PARTICLES
-  ────────────────────────────────────── */
+  /* ── 10. PARTICLES ── */
   if(d.particles.length){
     setProgress(80,'Writing particles...');
     for(const pt of d.particles){
@@ -1055,14 +1027,12 @@ async function runConversion(){
     log(`Particles: ${d.particles.length}`,'ok');
   }
 
-  /* ──────────────────────────────────────
-     11. SCRIPT API
-  ────────────────────────────────────── */
+  /* ── 11. SCRIPT API ── */
   if(doScr){
     setProgress(84,'Generating Script API...');
     logH('SCRIPT API');
     const lines = [
-      `// Java2Bedrock – Auto-generated Script API`,
+      `// Java2Bedrock v2.3 — Auto-generated Script API`,
       `// Namespace: ${ns}  |  Generated: ${new Date().toISOString()}`,
       `import { world, system, ItemStack } from "@minecraft/server";`,
       ``,
@@ -1100,755 +1070,18 @@ async function runConversion(){
     }
     lines.push(`// Tick counter`);
     lines.push(`let _tick = 0;`);
-    'use strict';
-
-// ═══════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════
-const S = {
-  file: null,
-  zip: null,
-  allFiles: [],
-  detected: {
-    blocks:[], items:[], entities:[], recipes:[],
-    textures:[], sounds:[], biomes:[], particles:[], food:[], loot:[]
-  },
-  textureMap: {},
-  outputZip: null,
-  modName: 'mod',
-  ready: false
-};
-
-// ═══════════════════════════════════════
-// PARTICLES BACKGROUND
-// ═══════════════════════════════════════
-(function(){
-  const c = document.getElementById('particles');
-  for(let i = 0; i < 30; i++){
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const col = Math.random() > 0.5 ? '#00f5ff' : '#9b59ff';
-    const size = 1 + Math.random() * 3;
-    p.style.cssText = `left:${Math.random()*100}%;width:${size}px;height:${size}px;background:${col};animation-duration:${7+Math.random()*13}s;animation-delay:${Math.random()*12}s;--drift:${(Math.random()-0.5)*180}px;`;
-    c.appendChild(p);
-  }
-})();
-
-// ═══════════════════════════════════════
-// DRAG AND DROP
-// ═══════════════════════════════════════
-const dz = document.getElementById('dropzone');
-dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
-dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
-dz.addEventListener('drop', e => {
-  e.preventDefault();
-  dz.classList.remove('dragover');
-  if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
-});
-document.getElementById('fileInput').addEventListener('change', e => {
-  if(e.target.files[0]) handleFile(e.target.files[0]);
-});
-
-// ═══════════════════════════════════════
-// BUTTON LISTENERS — addEventListener only
-// ═══════════════════════════════════════
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('convert-btn').addEventListener('click', startConversion);
-  document.getElementById('download-btn').addEventListener('click', downloadAddon);
-});
-// Fallback in case DOMContentLoaded already fired
-if(document.readyState !== 'loading'){
-  document.getElementById('convert-btn').addEventListener('click', startConversion);
-  document.getElementById('download-btn').addEventListener('click', downloadAddon);
-}
-
-// ═══════════════════════════════════════
-// UTILITY FUNCTIONS
-// ═══════════════════════════════════════
-function uuid(){
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    const r = Math.random()*16|0;
-    return (c==='x' ? r : (r&0x3|0x8)).toString(16);
-  });
-}
-function fmtSize(b){
-  if(b < 1024) return b + ' B';
-  if(b < 1048576) return (b/1024).toFixed(1) + ' KB';
-  return (b/1048576).toFixed(2) + ' MB';
-}
-function safe(s){
-  return String(s).toLowerCase().replace(/[^a-z0-9_]/g,'_').replace(/^_+|_+$/g,'').slice(0,48) || 'x';
-}
-function toDisplay(s){
-  return String(s).replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
-}
-function escH(s){
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
-
-// ═══════════════════════════════════════
-// UI HELPERS
-// ═══════════════════════════════════════
-function log(msg, type='info'){
-  const a = document.getElementById('log-area');
-  const d = document.createElement('div');
-  d.className = 'log-line log-' + type;
-  const ts = new Date().toLocaleTimeString('en',{hour12:false});
-  d.innerHTML = `<span style="color:var(--muted)">[${ts}]</span> ${escH(String(msg))}`;
-  a.appendChild(d);
-  a.scrollTop = a.scrollHeight;
-}
-function logH(msg){
-  const a = document.getElementById('log-area');
-  const d = document.createElement('div');
-  d.className = 'log-line log-head';
-  d.textContent = '─── ' + msg + ' ───';
-  a.appendChild(d);
-  a.scrollTop = a.scrollHeight;
-}
-function setProgress(pct, label){
-  const wrap = document.getElementById('progress-wrap');
-  if(wrap) wrap.classList.add('show');
-  const fill = document.getElementById('progress-fill');
-  const pctEl = document.getElementById('progress-pct');
-  const txtEl = document.getElementById('progress-text');
-  if(fill) fill.style.width = Math.min(100, Math.max(0, pct)) + '%';
-  if(pctEl) pctEl.textContent = Math.round(pct) + '%';
-  if(label && txtEl) txtEl.textContent = label;
-}
-function showAlert(msg, type){
-  const b = document.getElementById('alert-box');
-  const icons = { success:'✓', error:'✗', info:'ℹ' };
-  b.className = 'alert-box show ' + (type||'info');
-  document.getElementById('alert-icon').textContent = icons[type] || 'ℹ';
-  document.getElementById('alert-msg').textContent = msg;
-}
-function hideAlert(){
-  const b = document.getElementById('alert-box');
-  if(b) b.className = 'alert-box';
-}
-function setBadge(id, n){
-  const el = document.getElementById('badge-'+id);
-  if(!el) return;
-  el.textContent = n;
-  el.className = 'content-badge' + (n > 0 ? ' found' : '');
-}
-function setStat(id, v){
-  const el = document.getElementById('st-'+id);
-  if(el) el.textContent = v;
-}
-function setStep(n){
-  for(let i = 1; i <= 4; i++){
-    const el = document.getElementById('step'+i);
-    if(!el) continue;
-    el.classList.remove('active','done');
-    if(i < n) el.classList.add('done');
-    else if(i === n) el.classList.add('active');
-  }
-}
-
-// ═══════════════════════════════════════
-// FILE HANDLER
-// ═══════════════════════════════════════
-async function handleFile(file){
-  if(!/\.(zip|jar)$/i.test(file.name)){
-    showAlert('Only .zip or .jar files are supported!','error');
-    return;
-  }
-  hideAlert();
-  S.file      = file;
-  S.ready     = false;
-  S.outputZip = null;
-  S.textureMap = {};
-
-  document.getElementById('file-name').textContent = file.name;
-  document.getElementById('file-size').textContent = fmtSize(file.size);
-  document.getElementById('file-info').classList.add('show');
-  document.getElementById('download-section').classList.remove('show');
-  document.getElementById('summary-panel').style.display = 'none';
-
-  S.modName = file.name.replace(/\.(zip|jar)$/i,'').replace(/[^a-zA-Z0-9_\-]/g,'_');
-  document.getElementById('opt-ns').value = safe(S.modName).slice(0,16) || 'mymod';
-
-  setStep(2);
-  setProgress(5,'Reading archive...');
-  log('Loading: ' + file.name,'info');
-
-  try{
-    const buf = await file.arrayBuffer();
-    const zip = await JSZip.loadAsync(buf);
-    S.zip = zip;
-    S.allFiles = Object.keys(zip.files);
-    log('Archive opened — ' + S.allFiles.length + ' entries','ok');
-    setStat('files', S.allFiles.length);
-    setProgress(20,'Scanning contents...');
-    await scanMod(zip);
-    setProgress(100,'Scan complete!');
-    document.getElementById('convert-section').classList.add('show');
-    showAlert('Mod scanned successfully! Click Convert to begin.','success');
-    log('Scan complete. Ready to convert.','ok');
-  } catch(err){
-    log('Error reading file: ' + err.message,'err');
-    showAlert('Could not read file: ' + err.message,'error');
-    console.error('[Java2Bedrock] handleFile error:', err);
-  }
-}
-
-// ═══════════════════════════════════════
-// MOD SCANNER
-// ═══════════════════════════════════════
-async function scanMod(zip){
-  const d = S.detected;
-  Object.keys(d).forEach(k => d[k] = []);
-  S.textureMap = {};
-
-  // Detect mod loader
-  if(S.allFiles.some(f => f.includes('META-INF/neoforge.mods.toml'))) log('Loader detected: NeoForge','info');
-  else if(S.allFiles.some(f => f.includes('fabric.mod.json')))        log('Loader detected: Fabric','info');
-  else if(S.allFiles.some(f => f.includes('META-INF/mods.toml')))     log('Loader detected: Forge','info');
-  else                                                                   log('Loader: Unknown (generic scan)','warn');
-
-  // First pass — all files
-  for(const path of S.allFiles){
-    const lp    = path.toLowerCase();
-    const fname = path.split('/').pop();
-    const name  = fname.replace(/\.\w+$/,'');
-    if(!name) continue;
-
-    // Textures
-    if(/\.(png|jpg|jpeg)$/i.test(lp)){
-      d.textures.push(path);
-      const k = name.toLowerCase();
-      if(!S.textureMap[k]) S.textureMap[k] = path;
-      const stripped = k.replace(/_(block|item|tex|texture)$/,'');
-      if(!S.textureMap[stripped]) S.textureMap[stripped] = path;
-    }
-    // Blocks
-    if((lp.includes('/blockstates/') || lp.includes('/blocks/')) && lp.endsWith('.json')){
-      const n = safe(name);
-      if(n && !d.blocks.includes(n)) d.blocks.push(n);
-    }
-    // Items
-    if((lp.includes('/items/') || lp.includes('models/item/')) && lp.endsWith('.json')){
-      const n = safe(name);
-      if(n && !d.items.includes(n)) d.items.push(n);
-    }
-    // Entities
-    if((lp.includes('/entity/') || lp.includes('/entities/')) && lp.endsWith('.json')){
-      const n = safe(name);
-      if(n && !d.entities.includes(n)) d.entities.push(n);
-    }
-    // Recipes
-    if(lp.includes('/recipes/') && lp.endsWith('.json')) d.recipes.push(path);
-    // Sounds
-    if(/\.(ogg|mp3|wav)$/i.test(lp)) d.sounds.push(path);
-    // Biomes
-    if(lp.includes('/biomes/') && lp.endsWith('.json')){
-      const n = safe(name);
-      if(n && !d.biomes.includes(n)) d.biomes.push(n);
-    }
-    // Particles
-    if(lp.includes('/particles/') && lp.endsWith('.json')){
-      const n = safe(name);
-      if(n && !d.particles.includes(n)) d.particles.push(n);
-    }
-    // Loot tables
-    if(lp.includes('/loot_tables/') && lp.endsWith('.json')) d.loot.push(path);
-  }
-
-  setProgress(40,'Scanning class files...');
-  // Second pass — .class file name heuristics
-  for(const cf of S.allFiles.filter(f => f.endsWith('.class'))){
-    const cn = cf.split('/').pop().replace('.class','');
-    if(/Block$/i.test(cn)){
-      const n = safe(cn.replace(/Block$/i,''));
-      if(n && !d.blocks.includes(n)) d.blocks.push(n);
-    }
-    if(/Item$/i.test(cn)){
-      const n = safe(cn.replace(/Item$/i,''));
-      if(n && !d.items.includes(n)) d.items.push(n);
-    }
-    if(/(Entity|Mob|Boss)$/i.test(cn)){
-      const n = safe(cn.replace(/(Entity|Mob|Boss)$/i,''));
-      if(n && !d.entities.includes(n)) d.entities.push(n);
-    }
-    if(/Food(Item|Block)/i.test(cn)){
-      const n = safe(cn.replace(/Food(Item|Block)/gi,''));
-      if(n && !d.food.includes(n)) d.food.push(n);
-    }
-  }
-
-  setProgress(55,'Scanning recipes for food...');
-  for(const rp of d.recipes.slice(0,80)){
-    try{
-      const txt = await zip.file(rp).async('string');
-      const j   = JSON.parse(txt);
-      if(j.type && String(j.type).toLowerCase().includes('food')){
-        const n = safe(rp.split('/').pop().replace('.json',''));
-        if(n && !d.food.includes(n)) d.food.push(n);
-      }
-    } catch(e){}
-  }
-
-  // Update UI badges and stats
-  setBadge('blocks',    d.blocks.length);    setStat('blocks',    d.blocks.length);
-  setBadge('items',     d.items.length);     setStat('items',     d.items.length);
-  setBadge('entities',  d.entities.length);  setStat('entities',  d.entities.length);
-  setBadge('recipes',   d.recipes.length);   setStat('recipes',   d.recipes.length);
-  setBadge('textures',  d.textures.length);  setStat('textures',  d.textures.length);
-  setBadge('sounds',    d.sounds.length);    setStat('sounds',    d.sounds.length);
-  setBadge('biomes',    d.biomes.length);
-  setBadge('particles', d.particles.length);
-  setBadge('food',      d.food.length);
-  setBadge('loot',      d.loot.length);
-
-  log(`Blocks:${d.blocks.length} Items:${d.items.length} Entities:${d.entities.length} Recipes:${d.recipes.length}`,'ok');
-  log(`Textures:${d.textures.length} Sounds:${d.sounds.length} Biomes:${d.biomes.length} Loot:${d.loot.length}`,'ok');
-}
-
-// ═══════════════════════════════════════
-// MAIN CONVERSION
-// ═══════════════════════════════════════
-async function startConversion(){
-  if(!S.zip){
-    showAlert('Please upload a mod file first!','error');
-    return;
-  }
-
-  const convertBtn = document.getElementById('convert-btn');
-  convertBtn.disabled = true;
-  convertBtn.textContent = '⚙ Converting...';
-  hideAlert();
-  setStep(3);
-
-  // Read options
-  const ns     = safe(document.getElementById('opt-ns').value || 'mymod');
-  const ver    = document.getElementById('opt-ver').value || '1.21.0';
-  const doTex  = document.getElementById('opt-tex').classList.contains('on');
-  const doSnd  = document.getElementById('opt-snd').classList.contains('on');
-  const doRec  = document.getElementById('opt-rec').classList.contains('on');
-  const doEnt  = document.getElementById('opt-ent').classList.contains('on');
-  const doScr  = document.getElementById('opt-scr').classList.contains('on');
-  const doLoot = document.getElementById('opt-loot').classList.contains('on');
-  const verArr = ver.split('.').map(Number);
-
-  const d   = S.detected;
-  const zip = S.zip;
-  const out = new JSZip();
-
-  const BP = p => `behaviour_pack/${p}`;
-  const RP = p => `resource_pack/${p}`;
-
-  const stats = { blocks:0, items:0, entities:0, recipes:0, textures:0, sounds:0, loot:0 };
-  const scheduledTex = new Map();
-
-  logH('STARTING CONVERSION  ns=' + ns + '  ver=' + ver);
-  await sleep(10);
-
-  // ─────────────────────────────────────
-  // TEXTURE RESOLVER
-  // Returns the atlas key path and
-  // schedules the PNG copy/placeholder
-  // ─────────────────────────────────────
-  function resolveTex(name, cat){
-    const k   = name.toLowerCase();
-    let src   = null;
-    const candidates = [
-      k, k+'_block', k+'_item', k+'_texture',
-      k.replace(/_block$/,''), k.replace(/_item$/,'')
-    ];
-    for(const cand of candidates){
-      if(S.textureMap[cand]){ src = S.textureMap[cand]; break; }
-    }
-    const destFile = RP(`textures/${cat}/${k}.png`);
-    if(!scheduledTex.has(destFile)) scheduledTex.set(destFile, src);
-    return `textures/${cat}/${k}`;
-  }
-
-  // ─────────────────────────────────────
-  // 1. MANIFESTS
-  // ─────────────────────────────────────
-  setProgress(5,'Writing manifests...');
-  const bpUUID = uuid();
-  const rpUUID = uuid();
-  const bpManifest = {
-    format_version: 2,
-    header:{
-      name:`${ns} Behaviour Pack`,
-      description:`Converted from Java mod by Java2Bedrock v2.3`,
-      uuid: bpUUID,
-      version:[1,0,0],
-      min_engine_version: verArr
-    },
-    modules:[{ type:'data', uuid:uuid(), version:[1,0,0] }],
-    dependencies:[{ uuid:rpUUID, version:[1,0,0] }]
-  };
-  if(doScr){
-    bpManifest.modules.push({ type:'script', language:'javascript', uuid:uuid(), version:[1,0,0], entry:'scripts/main.js' });
-    bpManifest.dependencies.push({ module_name:'@minecraft/server', version:'1.9.0' });
-  }
-  out.file(BP('manifest.json'), JSON.stringify(bpManifest, null, 2));
-  out.file(RP('manifest.json'), JSON.stringify({
-    format_version: 2,
-    header:{
-      name:`${ns} Resource Pack`,
-      description:`Converted from Java mod by Java2Bedrock v2.3`,
-      uuid: rpUUID,
-      version:[1,0,0],
-      min_engine_version: verArr
-    },
-    modules:[{ type:'resources', uuid:uuid(), version:[1,0,0] }]
-  }, null, 2));
-  log('Manifests written','ok');
-
-  // ─────────────────────────────────────
-  // 2. BLOCKS
-  // ─────────────────────────────────────
-  setProgress(12,'Converting blocks...'); logH('BLOCKS');
-  const terrainTex = {
-    resource_pack_name:'vanilla',
-    texture_name:'atlas.terrain',
-    padding:8,
-    num_mip_levels:4,
-    texture_data:{}
-  };
-  const blocksJson = { format_version:'1.1.0' };
-
-  for(const b of d.blocks){
-    const id = `${ns}:${b}`;
-    const tp = resolveTex(b, 'blocks');
-    out.file(BP(`blocks/${b}.json`), JSON.stringify({
-      format_version: ver,
-      'minecraft:block':{
-        description:{ identifier:id, is_experimental:false },
-        components:{
-          'minecraft:destructible_by_mining':{ seconds_to_destroy:1.5 },
-          'minecraft:destructible_by_explosion':{ explosion_resistance:3 },
-          'minecraft:friction':{ value:0.4 },
-          'minecraft:map_color':'#888888',
-          'minecraft:material_instances':{ '*':{ texture:b, render_method:'opaque' } }
-        }
-      }
-    }, null, 2));
-    terrainTex.texture_data[b] = { textures: tp };
-    blocksJson[id] = { sound:'stone', textures: b };
-    stats.blocks++;
-  }
-  if(d.blocks.length){
-    out.file(RP('textures/terrain_texture.json'), JSON.stringify(terrainTex, null, 2));
-    out.file(RP('blocks.json'), JSON.stringify(blocksJson, null, 2));
-  }
-  log('Blocks converted: ' + stats.blocks,'ok');
-  await sleep(10);
-
-  // ─────────────────────────────────────
-  // 3. ITEMS
-  // ─────────────────────────────────────
-  setProgress(22,'Converting items...'); logH('ITEMS');
-  const itemAtlas = {
-    resource_pack_name:'vanilla',
-    texture_name:'atlas.items',
-    texture_data:{}
-  };
-
-  for(const it of d.items){
-    const id     = `${ns}:${it}`;
-    const isFood = d.food.includes(it);
-    const tp     = resolveTex(it, 'items');
-    const components = {
-      'minecraft:icon':{ texture: it },
-      'minecraft:display_name':{ value: toDisplay(it) },
-      'minecraft:max_stack_size': 64
-    };
-    if(isFood){
-      components['minecraft:food']     = { nutrition:4, saturation_modifier:0.3, can_always_eat:false };
-      components['minecraft:use_duration'] = 32;
-    }
-    out.file(BP(`items/${it}.json`), JSON.stringify({
-      format_version: ver,
-      'minecraft:item':{
-        description:{ identifier:id, category:'Items' },
-        components
-      }
-    }, null, 2));
-    itemAtlas.texture_data[it] = { textures: tp };
-    stats.items++;
-  }
-  if(d.items.length){
-    out.file(RP('textures/item_texture.json'), JSON.stringify(itemAtlas, null, 2));
-  }
-  log('Items converted: ' + stats.items,'ok');
-  await sleep(10);
-
-  // ─────────────────────────────────────
-  // 4. ENTITIES
-  // ─────────────────────────────────────
-  if(doEnt){
-    setProgress(32,'Converting entities...'); logH('ENTITIES');
-    for(const en of d.entities){
-      const id = `${ns}:${en}`;
-      const tp = resolveTex(en, 'entity');
-      out.file(BP(`entities/${en}.json`), JSON.stringify({
-        format_version:'1.18.0',
-        'minecraft:entity':{
-          description:{ identifier:id, is_spawnable:true, is_summonable:true, is_experimental:false },
-          component_groups:{},
-          components:{
-            'minecraft:physics':{ has_collision:true, has_gravity:true },
-            'minecraft:health':{ value:20, max:20 },
-            'minecraft:movement':{ value:0.25 },
-            'minecraft:collision_box':{ width:0.6, height:1.8 },
-            'minecraft:nameable':{},
-            'minecraft:pushable':{ is_pushable:true, is_pushable_by_piston:true },
-            'minecraft:behavior.random_stroll':{ priority:8, speed_multiplier:1.0 },
-            'minecraft:behavior.look_at_player':{ priority:7, look_distance:8 },
-            'minecraft:behavior.random_look_around':{ priority:9 }
-          },
-          events:{}
-        }
-      }, null, 2));
-      out.file(RP(`entity/${en}.entity.json`), JSON.stringify({
-        format_version:'1.10.0',
-        'minecraft:client_entity':{
-          description:{
-            identifier: id,
-            materials:{ default:'entity_alphatest' },
-            textures:{ default: tp },
-            geometry:{ default:`geometry.${en}` },
-            render_controllers:['controller.render.default'],
-            spawn_egg:{ base_color:'#606060', overlay_color:'#ff6600' }
-          }
-        }
-      }, null, 2));
-      stats.entities++;
-    }
-    log('Entities converted: ' + stats.entities,'ok');
-    await sleep(10);
-  }
-
-  // ─────────────────────────────────────
-  // 5. RECIPES
-  // ─────────────────────────────────────
-  if(doRec){
-    setProgress(42,'Converting recipes...'); logH('RECIPES');
-    let recOk = 0, recSkip = 0;
-    for(const rpath of d.recipes){
-      try{
-        const txt = await zip.file(rpath).async('string');
-        const jr  = JSON.parse(txt);
-        const rn  = safe(rpath.split('/').pop().replace('.json',''));
-        const br  = convertRecipe(jr, ns, rn, ver);
-        if(br){ out.file(BP(`recipes/${rn}.json`), JSON.stringify(br, null, 2)); recOk++; }
-        else recSkip++;
-      } catch(e){ recSkip++; }
-    }
-    stats.recipes = recOk;
-    log(`Recipes: ${recOk} converted, ${recSkip} skipped`,'ok');
-    await sleep(10);
-  }
-
-  // ─────────────────────────────────────
-  // 6. TEXTURES — copy + placeholders
-  // ─────────────────────────────────────
-  setProgress(54,'Copying textures...'); logH('TEXTURES');
-  if(doTex){
-    for(const tp of d.textures){
-      const lp   = tp.toLowerCase();
-      const fn   = tp.split('/').pop();
-      let dest;
-      if(lp.includes('/block'))       dest = RP(`textures/blocks/${fn}`);
-      else if(lp.includes('/item'))   dest = RP(`textures/items/${fn}`);
-      else if(lp.includes('/entity')) dest = RP(`textures/entity/${fn}`);
-      else                             dest = RP(`textures/misc/${fn}`);
-      if(!scheduledTex.has(dest)){
-        try{ out.file(dest, await zip.file(tp).async('uint8array')); stats.textures++; }
-        catch(e){}
-      }
-    }
-  }
-  // Write every atlas-scheduled texture (real file or placeholder)
-  let placeholderCount = 0;
-  for(const [dest, src] of scheduledTex.entries()){
-    if(src){
-      try{
-        out.file(dest, await zip.file(src).async('uint8array'));
-        stats.textures++;
-      } catch(e){
-        out.file(dest, makePNG(16,16,'#888888'));
-        placeholderCount++;
-      }
-    } else {
-      out.file(dest, makePNG(16,16,'#888888'));
-      placeholderCount++;
-    }
-  }
-  log(`Textures: ${stats.textures} copied, ${placeholderCount} placeholder(s) generated`,'ok');
-  await sleep(10);
-
-  // ─────────────────────────────────────
-  // 7. SOUNDS
-  // ─────────────────────────────────────
-  if(doSnd){
-    setProgress(64,'Copying sounds...'); logH('SOUNDS');
-    let sndOk = 0;
-    const sdefs = {
-      format_version:'1.14.0',
-      sound_definitions:{}
-    };
-    for(const sp of d.sounds){
-      try{
-        const fn = sp.split('/').pop();
-        out.file(RP(`sounds/custom/${fn}`), await zip.file(sp).async('uint8array'));
-        const k = fn.replace(/\.(ogg|mp3|wav)$/i,'');
-        sdefs.sound_definitions[`${ns}.${k}`] = {
-          category:'neutral',
-          sounds:[{ name:`sounds/custom/${fn}`, stream:false }]
-        };
-        sndOk++;
-      } catch(e){}
-    }
-    if(sndOk > 0) out.file(RP('sounds/sound_definitions.json'), JSON.stringify(sdefs, null, 2));
-    stats.sounds = sndOk;
-    log('Sounds copied: ' + sndOk,'ok');
-    await sleep(10);
-  }
-
-  // ─────────────────────────────────────
-  // 8. LOOT TABLES
-  // ─────────────────────────────────────
-  if(doLoot){
-    setProgress(72,'Converting loot tables...'); logH('LOOT TABLES');
-    let lootOk = 0;
-    for(const lp of d.loot){
-      try{
-        const j   = JSON.parse(await zip.file(lp).async('string'));
-        const fn  = lp.split('/').pop();
-        out.file(BP(`loot_tables/${fn}`), JSON.stringify(convertLoot(j, ns), null, 2));
-        lootOk++;
-      } catch(e){}
-    }
-    stats.loot = lootOk;
-    log('Loot tables converted: ' + lootOk,'ok');
-    await sleep(10);
-  }
-
-  // ─────────────────────────────────────
-  // 9. BIOMES
-  // ─────────────────────────────────────
-  if(d.biomes.length){
-    setProgress(76,'Writing biomes...');
-    for(const bm of d.biomes){
-      out.file(BP(`biomes/${bm}.json`), JSON.stringify({
-        format_version:'1.13.0',
-        'minecraft:biome':{
-          description:{ identifier:`${ns}:${bm}` },
-          components:{
-            'minecraft:surface_parameters':{
-              sea_floor_depth:7, sea_floor_material:'minecraft:gravel',
-              foundation_material:'minecraft:stone',
-              mid_material:'minecraft:dirt', top_material:'minecraft:grass'
-            },
-            'minecraft:climate':{ temperature:0.5, downfall:0.5, snow_accumulation:[0,0.125] }
-          }
-        }
-      }, null, 2));
-    }
-    log('Biomes written: ' + d.biomes.length,'ok');
-  }
-
-  // ─────────────────────────────────────
-  // 10. PARTICLES
-  // ─────────────────────────────────────
-  if(d.particles.length){
-    setProgress(80,'Writing particles...');
-    for(const pt of d.particles){
-      out.file(RP(`particles/${pt}.json`), JSON.stringify({
-        format_version:'1.10.0',
-        particle_effect:{
-          description:{
-            identifier:`${ns}:${pt}`,
-            basic_render_parameters:{ material:'particles_alpha', texture:'textures/particle/particles' }
-          },
-          components:{
-            'minecraft:emitter_rate_instant':{ num_particles:10 },
-            'minecraft:emitter_lifetime_once':{ active_time:1 },
-            'minecraft:emitter_shape_point':{ offset:[0,0,0], direction:'outward' },
-            'minecraft:particle_lifetime_expression':{ max_lifetime:1.0 },
-            'minecraft:particle_appearance_billboard':{
-              size:[0.1,0.1], facing_camera_type:'lookat_xyz',
-              uv:{ texture_width:128, texture_height:128, uv:[0,0], uv_size:[8,8] }
-            }
-          }
-        }
-      }, null, 2));
-    }
-    log('Particles written: ' + d.particles.length,'ok');
-  }
-
-  // ─────────────────────────────────────
-  // 11. SCRIPT API
-  // ─────────────────────────────────────
-  if(doScr){
-    setProgress(85,'Generating Script API...'); logH('SCRIPT API');
-    const lines = [
-      `// Java2Bedrock v2.3 — Auto-generated Script API`,
-      `// Namespace: ${ns}  |  Generated: ${new Date().toISOString()}`,
-      `import { world, system, ItemStack } from "@minecraft/server";`,
-      ``,
-      `world.afterEvents.worldInitialize.subscribe(() => {`,
-      `  console.log("[${ns}] Add-on loaded successfully!");`,
-      `});`,
-      ``
-    ];
-    if(d.blocks.length){
-      lines.push(`// Block break drop handlers`);
-      lines.push(`world.afterEvents.playerBreakBlock.subscribe(ev => {`);
-      lines.push(`  const id = ev.block.typeId;`);
-      for(const b of d.blocks.slice(0,20)){
-        lines.push(`  if(id === '${ns}:${b}') ev.player.dimension.spawnItem(new ItemStack('${ns}:${b}', 1), ev.block.location);`);
-      }
-      lines.push(`});`);
-      lines.push(``);
-    }
-    if(d.items.length){
-      lines.push(`// Item use handlers`);
-      lines.push(`world.afterEvents.itemUse.subscribe(ev => {`);
-      lines.push(`  const id = ev.itemStack.typeId;`);
-      for(const it of d.items.slice(0,20)){
-        lines.push(`  if(id === '${ns}:${it}') ev.source.sendMessage('§b[${ns}] Used: ${toDisplay(it)}');`);
-      }
-      lines.push(`});`);
-      lines.push(``);
-    }
-    if(d.entities.length){
-      lines.push(`// Entity spawn handlers`);
-      lines.push(`world.afterEvents.entitySpawn.subscribe(ev => {`);
-      lines.push(`  const id = ev.entity.typeId;`);
-      for(const en of d.entities.slice(0,10)){
-        lines.push(`  if(id === '${ns}:${en}') console.log('[${ns}] Spawned: ${en}');`);
-      }
-      lines.push(`});`);
-      lines.push(``);
-    }
-    lines.push(`// Tick counter`);
-    lines.push(`let _tick = 0;`);
     lines.push(`system.runInterval(() => { _tick++; }, 1);`);
     out.file(BP('scripts/main.js'), lines.join('\n'));
     log('Script API generated','ok');
     await sleep(10);
   }
 
-  // ─────────────────────────────────────
-  // 12. PACK ICONS
-  // ─────────────────────────────────────
+  /* ── 12. PACK ICONS ── */
   out.file(BP('pack_icon.png'), makePNG(64, 64, '#7c3aed'));
   out.file(RP('pack_icon.png'), makePNG(64, 64, '#0ea5e9'));
   log('Pack icons generated','ok');
 
-  // ─────────────────────────────────────
-  // 13. README
-  // ─────────────────────────────────────
+  /* ── 13. README ── */
   out.file('README.md', [
     `# ${ns} — Bedrock Add-on`,
     `Converted by Java2Bedrock v2.3 on ${new Date().toLocaleDateString()}`,
@@ -1875,9 +1108,7 @@ async function startConversion(){
     `## Target: Bedrock Edition ${ver}+`
   ].join('\n'));
 
-  // ─────────────────────────────────────
-  // FINALISE
-  // ─────────────────────────────────────
+  /* ── FINALISE ── */
   setProgress(100,'Conversion complete!');
   S.outputZip = out;
   S.ready     = true;
@@ -1891,26 +1122,20 @@ async function startConversion(){
   showAlert('Conversion complete! Click Download to save your .mcaddon file.','success');
   logH('ALL DONE');
   log('Click the green Download button below.','ok');
-
-  convertBtn.disabled = false;
-  convertBtn.textContent = '⚡ CONVERT TO MCADDON';
 }
 
-// ═══════════════════════════════════════
-// DOWNLOAD — fixed, robust
-// ═══════════════════════════════════════
+/* ════════════════════════════════════════════
+   DOWNLOAD
+════════════════════════════════════════════ */
 async function downloadAddon(){
-  console.log('[Java2Bedrock] downloadAddon() triggered');
-
   const btn = document.getElementById('download-btn');
 
   if(!S.ready || !S.outputZip){
     showAlert('Please convert a mod first!','error');
-    log('Download attempted before conversion was complete','warn');
     return;
   }
 
-  btn.disabled = true;
+  btn.disabled    = true;
   btn.textContent = '⏳ Building archive...';
   log('Generating final .mcaddon zip...','info');
 
@@ -1920,11 +1145,7 @@ async function downloadAddon(){
       meta => setProgress(meta.percent, `Compressing... ${Math.round(meta.percent)}%`)
     );
 
-    console.log('[Java2Bedrock] Blob generated, size:', blob.size);
-
-    if(blob.size === 0){
-      throw new Error('Generated archive is empty — nothing to download.');
-    }
+    if(blob.size === 0) throw new Error('Generated archive is empty — nothing to download.');
 
     const url  = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -1935,29 +1156,26 @@ async function downloadAddon(){
     link.click();
 
     setTimeout(() => {
-      try{
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-      } catch(e){}
+      try{ document.body.removeChild(link); URL.revokeObjectURL(url); }catch(e){}
     }, 5000);
 
     log('Download started: ' + S.modName + '_bedrock.mcaddon (' + fmtSize(blob.size) + ')','ok');
     showAlert('Downloaded successfully! (' + fmtSize(blob.size) + ')','success');
     setProgress(100,'Download complete!');
 
-  } catch(err){
-    console.error('[Java2Bedrock] Download error:', err);
+  }catch(err){
     log('Download failed: ' + err.message,'err');
     showAlert('Download failed: ' + err.message,'error');
-  } finally {
-    btn.disabled = false;
+    console.error(err);
+  }finally{
+    btn.disabled    = false;
     btn.textContent = '⬇ DOWNLOAD .mcaddon';
   }
 }
 
-// ═══════════════════════════════════════
-// RECIPE CONVERTER
-// ═══════════════════════════════════════
+/* ════════════════════════════════════════════
+   RECIPE CONVERTER
+════════════════════════════════════════════ */
 function convertRecipe(jr, ns, name, ver){
   const type       = (jr.type||'').toLowerCase();
   const ri         = jr.result;
@@ -2020,9 +1238,9 @@ function convertRecipe(jr, ns, name, ver){
   return null;
 }
 
-// ═══════════════════════════════════════
-// LOOT TABLE CONVERTER
-// ═══════════════════════════════════════
+/* ════════════════════════════════════════════
+   LOOT TABLE CONVERTER
+════════════════════════════════════════════ */
 function convertLoot(jlt, ns){
   const out = { pools:[] };
   for(const pool of (jlt.pools||[])){
@@ -2043,9 +1261,9 @@ function convertLoot(jlt, ns){
   return out;
 }
 
-// ═══════════════════════════════════════
-// ITEM ID MAPPER  Java → Bedrock
-// ═══════════════════════════════════════
+/* ════════════════════════════════════════════
+   ITEM ID MAPPER
+════════════════════════════════════════════ */
 function mapItem(id, ns){
   if(!id) return `${ns}:unknown`;
   const s = String(id);
@@ -2054,20 +1272,16 @@ function mapItem(id, ns){
   return `${ns}:${safe(s)}`;
 }
 
-// ═══════════════════════════════════════
-// PLACEHOLDER PNG GENERATOR
-// Pure JS — no canvas, no external libs.
-// Produces a valid PNG so atlas entries
-// always have a backing file and Bedrock
-// never renders pink/magenta textures.
-// ═══════════════════════════════════════
+/* ════════════════════════════════════════════
+   PLACEHOLDER PNG GENERATOR
+   Pure JS — no canvas, no external libs.
+════════════════════════════════════════════ */
 function makePNG(w=16, h=16, hex='#888888'){
   hex = hex.replace('#','');
   const r = parseInt(hex.slice(0,2),16)||136;
   const g = parseInt(hex.slice(2,4),16)||136;
   const b = parseInt(hex.slice(4,6),16)||136;
 
-  // Raw RGBA scanlines with filter byte 0 (None) per row
   const raw = new Uint8Array(h * (1 + w*4));
   for(let y=0; y<h; y++){
     const base = y*(1+w*4);
@@ -2097,17 +1311,16 @@ function makePNG(w=16, h=16, hex='#888888'){
   idv.setUint32(0,w); idv.setUint32(4,h);
   ihdr[8]=8; ihdr[9]=2; ihdr[10]=0; ihdr[11]=0; ihdr[12]=0;
 
-  const sig  = new Uint8Array([137,80,78,71,13,10,26,10]);
-  const c1   = mkChunk('IHDR', ihdr);
-  const c2   = mkChunk('IDAT', idat);
-  const c3   = mkChunk('IEND', new Uint8Array(0));
-  const png  = new Uint8Array(sig.length + c1.length + c2.length + c3.length);
-  let off    = 0;
+  const sig = new Uint8Array([137,80,78,71,13,10,26,10]);
+  const c1  = mkChunk('IHDR', ihdr);
+  const c2  = mkChunk('IDAT', idat);
+  const c3  = mkChunk('IEND', new Uint8Array(0));
+  const png = new Uint8Array(sig.length + c1.length + c2.length + c3.length);
+  let off   = 0;
   [sig,c1,c2,c3].forEach(a => { png.set(a,off); off+=a.length; });
   return png;
 }
 
-// Zlib store — uncompressed but fully valid deflate envelope
 function zlibStore(data){
   const CHUNK   = 65535;
   const nBlocks = Math.ceil(data.length / CHUNK) || 1;
@@ -2130,7 +1343,6 @@ function zlibStore(data){
   return out.subarray(0,op);
 }
 
-// CRC32 lookup table
 const CRC_TABLE = (()=>{
   const t = new Uint32Array(256);
   for(let i=0;i<256;i++){
@@ -2147,9 +1359,9 @@ function crc32(buf){
   return (c^0xffffffff)>>>0;
 }
 
-// ═══════════════════════════════════════
-// FILE TREE RENDERER
-// ═══════════════════════════════════════
+/* ════════════════════════════════════════════
+   FILE TREE RENDERER
+════════════════════════════════════════════ */
 function buildTree(zip){
   const el    = document.getElementById('file-tree');
   const files = Object.keys(zip.files).filter(f => !zip.files[f].dir).sort();
@@ -2168,7 +1380,7 @@ function buildTree(zip){
 }
 
 function renderTree(node, indent){
-  let h    = '';
+  let h = '';
   const keys = Object.keys(node).sort((a,b) => {
     const ad = typeof node[a]==='object';
     const bd = typeof node[b]==='object';
@@ -2189,18 +1401,18 @@ function renderTree(node, indent){
   return h;
 }
 
-// ═══════════════════════════════════════
-// SUMMARY PANEL
-// ═══════════════════════════════════════
+/* ════════════════════════════════════════════
+   SUMMARY PANEL
+════════════════════════════════════════════ */
 function showSummary(stats, ns, ver){
   document.getElementById('summary-panel').style.display = 'block';
   const rows = [
-    ['🧱 Blocks',    stats.blocks],
-    ['⚔️ Items',     stats.items],
-    ['👾 Entities',  stats.entities],
-    ['📜 Recipes',   stats.recipes],
-    ['🖼️ Textures',  stats.textures],
-    ['🔊 Sounds',    stats.sounds],
+    ['🧱 Blocks',      stats.blocks],
+    ['⚔️ Items',       stats.items],
+    ['👾 Entities',    stats.entities],
+    ['📜 Recipes',     stats.recipes],
+    ['🖼️ Textures',    stats.textures],
+    ['🔊 Sounds',      stats.sounds],
     ['🗺️ Loot Tables', stats.loot]
   ];
   document.getElementById('summary-grid').innerHTML = rows.map(([label,val]) => `
@@ -2209,17 +1421,15 @@ function showSummary(stats, ns, ver){
       <span class="summary-val" style="${val===0?'color:var(--muted)':''}">${val}</span>
     </div>`).join('');
 
-  const total = Object.values(stats).reduce((a,b)=>a+b, 0);
+  const total = Object.values(stats).reduce((a,b)=>a+b,0);
   document.getElementById('summary-footer').innerHTML = `
     <div style="background:rgba(0,255,136,0.06);border:1px solid var(--green);
       border-radius:8px;padding:10px 14px;color:var(--green);font-size:0.82rem;">
       ✓ &nbsp;Namespace: <strong>${escH(ns)}</strong>
       &nbsp;·&nbsp; Target: <strong>Bedrock ${escH(ver)}</strong>
       &nbsp;·&nbsp; <strong>${total}</strong> total assets
-      &nbsp;·&nbsp; <strong>0 pink textures</strong>
     </div>`;
 }
-
 </script>
 </body>
 </html>
