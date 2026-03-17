@@ -623,22 +623,20 @@ async function runConversion(){
   for(const b of d.blocks){
     const id=`${ns}:${b}`;
     const atlasKey=schedTex(b,'blocks');
-    // The texture key in material_instances must match terrain_texture key (just the name, no path)
-    const texKey=b;  // short key, registered in terrain_texture.json below
+    const texKey=b;
     out.file(BP(`blocks/${b}.json`),JSON.stringify({
-      format_version:ver,
+      format_version:'1.20.0',
       'minecraft:block':{
-        description:{identifier:id,is_experimental:false},
+        description:{identifier:id},
         components:{
           'minecraft:destructible_by_mining':{seconds_to_destroy:1.5},
           'minecraft:destructible_by_explosion':{explosion_resistance:3},
-          'minecraft:friction':{value:0.4},
-          'minecraft:map_color':'#888888',
-          'minecraft:material_instances':{'*':{texture:texKey,render_method:'opaque',face_dimming:true,ambient_occlusion:true}}
+          'minecraft:friction':0.4,
+          'minecraft:map_color':{color:'#888888'},
+          'minecraft:material_instances':{'*':{texture:texKey,render_method:'opaque'}}
         }
       }
     },null,2));
-    // terrain_texture entry points to the FULL atlas path (no .png extension)
     terrainTex.texture_data[texKey]={textures:atlasKey};
     blocksJson[id]={sound:'stone',textures:texKey};
     stats.blocks++;
@@ -666,18 +664,17 @@ async function runConversion(){
     const comps={
       'minecraft:icon':{texture:texKey},
       'minecraft:display_name':{value:toDisplay(it)},
-      'minecraft:max_stack_size':64,
-      'minecraft:hand_equipped':false
+      'minecraft:max_stack_size':64
     };
     if(isFood){
       comps['minecraft:food']={nutrition:4,saturation_modifier:0.3,can_always_eat:false};
       comps['minecraft:use_duration']=32;
+      comps['minecraft:use_animation']='eat';
     }
     out.file(BP(`items/${it}.json`),JSON.stringify({
-      format_version:ver,
-      'minecraft:item':{description:{identifier:id,category:'Items'},components:comps}
+      format_version:'1.20.0',
+      'minecraft:item':{description:{identifier:id},components:comps}
     },null,2));
-    // item_texture.json: textures array should be the atlas key (path without .png)
     itemAtlas.texture_data[texKey]={textures:atlasKey};
     stats.items++;
   }
@@ -702,12 +699,8 @@ async function runConversion(){
       out.file(BP(`entities/${en}.json`),JSON.stringify({
         format_version:'1.18.0',
         'minecraft:entity':{
-          description:{identifier:id,is_spawnable:true,is_summonable:true,is_experimental:false},
-          component_groups:{
-            [`${en}_adult`]:{
-              'minecraft:experience_reward':{on_killed:{equation:'2+query.last_hit_by_player',type:'float'}}
-            }
-          },
+          description:{identifier:id,is_spawnable:true,is_summonable:true},
+          component_groups:{},
           components:{
             'minecraft:type_family':{family:[en,'mob']},
             'minecraft:physics':{has_collision:true,has_gravity:true},
@@ -717,14 +710,17 @@ async function runConversion(){
             'minecraft:nameable':{},
             'minecraft:pushable':{is_pushable:true,is_pushable_by_piston:true},
             'minecraft:loot':{table:`loot_tables/entities/${en}.json`},
+            'minecraft:experience_reward':{on_killed:'Math.Random(1,3)*query.last_hit_by_player'},
+            'minecraft:breathable':{total_supply:15,suffocate_time:0,breathes_air:true},
+            'minecraft:navigation.walk':{can_path_over_water:false,avoid_damage_blocks:true},
+            'minecraft:movement.basic':{},
+            'minecraft:jump.static':{},
             'minecraft:behavior.random_stroll':{priority:8,speed_multiplier:1.0},
             'minecraft:behavior.look_at_player':{priority:7,look_distance:8,probability:0.02},
             'minecraft:behavior.random_look_around':{priority:9},
-            'minecraft:behavior.hurt_by_target':{priority:2},
-            'minecraft:navigation.walk':{can_path_over_water:true,avoid_damage_blocks:true},
-            'minecraft:breathable':{total_supply:15,suffocate_time:0}
+            'minecraft:behavior.hurt_by_target':{priority:2,entity_types:[]}
           },
-          events:{[`${en}_become_adult`]:{add:{component_groups:[`${en}_adult`]}}}
+          events:{}
         }
       },null,2));
 
@@ -761,18 +757,19 @@ async function runConversion(){
         'minecraft:spawn_rules':{
           description:{identifier:id,population_control:'monster'},
           conditions:[{
-            minecraft_difficulty_filter:{min:1,max:4},
             'minecraft:spawns_on_surface':{},
             'minecraft:brightness_filter':{min:0,max:7,adjust_for_weather:true},
-            'minecraft:herd':{min_size:1,max_size:4},
-            'minecraft:weight':{default:100}
+            'minecraft:difficulty_filter':{min:1,max:4},
+            'minecraft:herd':{min_size:1,max_size:3},
+            'minecraft:weight':{default:10},
+            'minecraft:spawns_underground':{}
           }]
         }
       },null,2));
 
-      // Auto-generate a simple loot table for the entity
+      // Simple entity loot table
       out.file(BP(`loot_tables/entities/${en}.json`),JSON.stringify({
-        pools:[{rolls:1,entries:[{type:'item',name:`${ns}:${en}_drop`,weight:1,functions:[{function:'set_count',count:{min:0,max:2}}]}]}]
+        pools:[{rolls:{min:0,max:2},entries:[{type:'item',name:'minecraft:bone',weight:1}]}]
       },null,2));
 
       stats.entities++;
@@ -891,9 +888,8 @@ async function runConversion(){
           description:{identifier:`${ns}:${bm}`},
           components:{
             'minecraft:surface_parameters':{sea_floor_depth:7,sea_floor_material:'minecraft:gravel',foundation_material:'minecraft:stone',mid_material:'minecraft:dirt',top_material:'minecraft:grass'},
-            'minecraft:climate':{temperature:0.5,downfall:0.5,snow_accumulation:[0,0.125]},
-            'minecraft:overworld_height':{noise_params:[0.1,0.3]},
-            'minecraft:world_generation_rules':{hills_transformation:`${ns}:${bm}_hills`}
+            'minecraft:climate':{temperature:0.5,downfall:0.5},
+            'minecraft:overworld_height':{noise_params:[0.1,0.3]}
           }
         }
       },null,2));
@@ -920,9 +916,7 @@ async function runConversion(){
           weather:{water_fog_color:'#1A1A2E',fog_color:'#1A1A2E',fog_start:0.0,fog_end:16.0,render_distance_type:'render'}
         }
       },null,2));
-      // Dimension data stub — read by script API
-      out.file(BP(`structures/${dim}_spawn.mcstructure`),new Uint8Array(0));
-      log(`Dimension: ${dim} (fog + script stub)`,'ok');
+      log(`Dimension: ${dim} → fog definition written`,'ok');
       stats.dims++;
     }
     log(`Dimensions: ${stats.dims} (fog definitions + Script API stubs)`,'ok');
@@ -960,10 +954,10 @@ async function runConversion(){
     const L=[];
     L.push(`// Java2Bedrock v3.0 — Auto-generated Script API`);
     L.push(`// Namespace: ${ns}  |  Generated: ${new Date().toISOString()}`);
-    L.push(`import { world, system, ItemStack, BlockPermutation } from "@minecraft/server";`);
+    L.push(`import { world, system, ItemStack } from "@minecraft/server";`);
     L.push(``);
-    L.push(`// ── Addon init ──`);
-    L.push(`world.afterEvents.worldInitialize.subscribe(() => {`);
+    L.push(`// ── Addon init (runs after first tick) ──`);
+    L.push(`system.run(() => {`);
     L.push(`  console.log("[${ns}] Add-on loaded via Java2Bedrock v3.0!");`);
     L.push(`});`);
     L.push(``);
@@ -1021,25 +1015,27 @@ async function runConversion(){
       }
       L.push(`});`); L.push(``);
 
-      L.push(`// ── Entity death drops ──`);
+      L.push(`// ── Entity death ──`);
       L.push(`world.afterEvents.entityDie.subscribe(ev => {`);
       L.push(`  const eid = ev.deadEntity.typeId;`);
       for(const en of d.entities.slice(0,10)){
         L.push(`  if(eid==='${ns}:${en}'){`);
-        L.push(`    const loc=ev.deadEntity.location;`);
-        L.push(`    ev.deadEntity.dimension.spawnItem(new ItemStack('${ns}:${en}_drop',1),loc);`);
+        L.push(`    const loc = ev.deadEntity.location;`);
+        L.push(`    ev.deadEntity.dimension.spawnItem(new ItemStack('minecraft:bone',1), loc);`);
         L.push(`  }`);
       }
       L.push(`});`); L.push(``);
     }
 
     if(doDim&&d.dimensions.length){
-      L.push(`// ── Dimension teleport stubs ──`);
-      L.push(`// Bedrock doesn't natively support custom dimensions; use this as a portal trigger`);
+      L.push(`// ── Dimension portal stubs (Bedrock simulates custom dimensions via teleport) ──`);
       L.push(`world.afterEvents.playerInteractWithBlock.subscribe(ev => {`);
+      L.push(`  const bid = ev.block.typeId;`);
       for(const dim of d.dimensions){
-        L.push(`  // To teleport to ${dim} dimension simulation:`);
-        L.push(`  // ev.player.teleport({x:0,y:64,z:0},{dimension:world.getDimension('overworld')});`);
+        L.push(`  // Portal to ${dim}: place a ${ns}:${dim}_portal block, then:`);
+        L.push(`  if(bid === '${ns}:${dim}_portal'){`);
+        L.push(`    ev.player.teleport({x:0,y:64,z:0}, {dimension: world.getDimension('the_end')});`);
+        L.push(`  }`);
       }
       L.push(`});`); L.push(``);
     }
