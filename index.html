@@ -473,21 +473,104 @@ async function scanMod(zip){
     }
   }
 
-  setProgress(55,'Checking recipes for food data...');
-  // ── THIRD PASS ── read recipe JSON for food
-  for(const rp of d.recipes.slice(0,100)){
+  setProgress(55,'Reading item model JSONs for texture paths...');
+  // ── THIRD PASS ── parse item model JSONs to get EXACT texture references
+  // Java model JSON: { "parent": "item/generated", "textures": { "layer0": "modid:item/myitem" } }
+  // This tells us the real texture path — much more reliable than guessing
+  for(const path of S.allFiles){
+    const lp=path.toLowerCase();
+    if(!(lp.includes('models/item/')||lp.includes('models\\item\\'))&&!lp.includes('/items/')) continue;
+    if(!lp.endsWith('.json')) continue;
+    try{
+      const j=JSON.parse(await zip.file(path).async('string'));
+      const itemName=safe(noExt(path));
+      if(!itemName) continue;
+      if(!d.items.includes(itemName)) d.items.push(itemName);
+
+      // Extract texture path from model
+      const textures=j.textures||{};
+      // layer0 is the main item texture in Java
+      const layer0=textures.layer0||textures.layer1||textures.all||Object.values(textures)[0];
+      if(layer0&&typeof layer0==='string'){
+        // layer0 = "modid:item/myitem" or "item/myitem" or just "myitem"
+        const texPath=layer0.includes(':')?layer0.split(':')[1]:layer0;
+        // texPath = "item/myitem" — find matching PNG in archive
+        const searchName=safe(texPath.split('/').pop());
+        // Register a strong hint in texMap: itemName → wherever that PNG is
+        if(!S.texMap[itemName]||S.texMap[itemName].path.includes('placeholder')){
+          // Find the PNG
+          const pngCandidates=S.allFiles.filter(f=>{
+            const fl=f.toLowerCase();
+            return fl.endsWith('.png')&&(fl.includes(texPath.toLowerCase())||safe(noExt(f))===searchName);
+          });
+          if(pngCandidates.length>0){
+            S.texMap[itemName]={path:pngCandidates[0],cat:'items'};
+            // Also register by the search name
+            if(searchName&&!S.texMap[searchName]) S.texMap[searchName]={path:pngCandidates[0],cat:'items'};
+          }
+        }
+      }
+
+      // Detect food from model parent/components
+      if(j.overrides&&Array.isArray(j.overrides)){
+        // Items with overrides (like bows, crossbows) are tools
+      }
+    }catch(e){}
+  }
+
+  setProgress(62,'Checking recipes for food data...');
+  // ── FOURTH PASS ── read recipe JSON for food tags and extra item discovery
+  for(const rp of d.recipes.slice(0,150)){
     try{
       const j=JSON.parse(await zip.file(rp).async('string'));
-      if(j.type&&String(j.type).toLowerCase().includes('food')){
+      const type=(j.type||'').toLowerCase();
+
+      // Food detection
+      if(type.includes('food')){
         const n=safe(noExt(rp)); if(n&&!d.food.includes(n))d.food.push(n);
       }
-      // also infer items from recipe results
+
+      // Discover items from recipe results
       const ri=j.result;
       if(ri){
         const rid=ri.item||ri.id||ri;
         if(typeof rid==='string'&&rid.includes(':')&&!rid.startsWith('minecraft:')){
           const n=safe(rid.split(':')[1]);
           if(n&&!d.items.includes(n))d.items.push(n);
+        }
+      }
+
+      // Discover items from ingredients too
+      const ings=[...(j.ingredients||[])];
+      if(j.ingredient) ings.push(j.ingredient);
+      Object.values(j.key||{}).forEach(v=>ings.push(v));
+      for(const ing of ings){
+        const iid=(ing&&(ing.item||ing.tag||ing))||'';
+        if(typeof iid==='string'&&iid.includes(':')&&!iid.startsWith('minecraft:')){
+          const n=safe(iid.split(':')[1]);
+          if(n&&!d.items.includes(n))d.items.push(n);
+        }
+      }
+    }catch(e){}
+  }
+
+  // ── FIFTH PASS ── scan tags files to detect food items
+  for(const path of S.allFiles){
+    const lp=path.toLowerCase();
+    if(!lp.includes('/tags/')&&!lp.includes('\\tags\\')) continue;
+    if(!lp.endsWith('.json')) continue;
+    try{
+      const j=JSON.parse(await zip.file(path).async('string'));
+      const isFoodTag=lp.includes('food')||lp.includes('edible');
+      if(isFoodTag&&j.values&&Array.isArray(j.values)){
+        for(const v of j.values){
+          if(typeof v==='string'&&v.includes(':')&&!v.startsWith('minecraft:')){
+            const n=safe(v.split(':')[1]);
+            if(n){
+              if(!d.items.includes(n)) d.items.push(n);
+              if(!d.food.includes(n)) d.food.push(n);
+            }
+          }
         }
       }
     }catch(e){}
@@ -660,21 +743,41 @@ async function runConversion(){
     const id=`${ns}:${it}`;
     const isFood=d.food.includes(it);
     const atlasKey=schedTex(it,'items');
-    const texKey=it;
+    // Namespaced texKey avoids collisions with vanilla item_texture.json keys
+    const texKey=`${ns}.${it}`;
+
+    const nm=it.toLowerCase();
+    const isTool=/(sword|_axe|pickaxe|shovel|spade|_hoe)/.test(nm);
+    const isArmor=/(helmet|chestplate|leggings|boots)/.test(nm);
+    const stackSize=(isFood||isTool||isArmor)?1:64;
+
+    // Bedrock 1.20+ item components:
+    // minecraft:icon needs { textures: { default: texKey } }  NOT { texture: texKey }
     const comps={
-      'minecraft:icon':{texture:texKey},
+      'minecraft:icon':{textures:{default:texKey}},
       'minecraft:display_name':{value:toDisplay(it)},
-      'minecraft:max_stack_size':64
+      'minecraft:max_stack_size':stackSize
     };
     if(isFood){
-      comps['minecraft:food']={nutrition:4,saturation_modifier:0.3,can_always_eat:false};
-      comps['minecraft:use_duration']=32;
-      comps['minecraft:use_animation']='eat';
+      // saturation_modifier is an enum string in 1.20, not a float
+      comps['minecraft:food']={nutrition:4,saturation_modifier:'normal',can_always_eat:false};
+      // use_modifiers replaces use_animation/use_duration
+      comps['minecraft:use_modifiers']={use_duration:1.6,movement_modifier:0.33};
     }
+    if(isTool||isArmor){
+      comps['minecraft:durability']={max_durability:250};
+      comps['minecraft:hand_equipped']=true;
+    }
+
     out.file(BP(`items/${it}.json`),JSON.stringify({
       format_version:'1.20.0',
-      'minecraft:item':{description:{identifier:id},components:comps}
+      'minecraft:item':{
+        description:{identifier:id,menu_category:{category:'items'}},
+        components:comps
+      }
     },null,2));
+
+    // item_texture.json: texKey maps to atlasKey (full path, no .png extension)
     itemAtlas.texture_data[texKey]={textures:atlasKey};
     stats.items++;
   }
