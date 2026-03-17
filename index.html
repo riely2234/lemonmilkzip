@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Java2Bedrock – Minecraft Mod Converter</title>
+<style>
+/* ═══════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#08090f;--bg2:#0f1020;--bg3:#141530;
+  --cyan:#00f5ff;--purple:#9b59ff;--green:#00ff88;
+  --red:#ff4466;--yellow:#ffd700;--orange:#ff8c00;
+  --text:#e0e8ff;--muted:#6677aa;
+  --border:#1e2248;--glow:0 0 20px rgba(0,245,255,0.3);
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--purple);border-radius:3px;}
+
+/* ═══════════════════════════════════════════
+   NAVBAR
+═══════════════════════════════════════════ */
+nav{
+  background:linear-gradient(90deg,var(--bg2),var(--bg3));
+  border-bottom:1px solid var(--border);
+  padding:14px 32px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(10px);
+}
+.logo{
+  font-size:1.6rem;font-weight:900;letter-spacing:2px;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:none;
+}
+.logo span{font-size:1.2rem;}
+.nav-badge{
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  padding:4px 12px;border-radius:20px;font-size:0.75rem;
+  color:#fff;font-weight:700;letter-spacing:1px;
+}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+.hero{
+  text-align:center;padding:48px 24px 24px;
+}
+.hero h1{
+  font-size:2.4rem;font-weight:900;
+  background:linear-gradient(135deg,var(--cyan),var(--purple),var(--green));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:12px;
+}
+.hero p{color:var(--muted);font-size:1.05rem;max-width:600px;margin:0 auto;}
+
+/* ═══════════════════════════════════════════
+   STEPS
+═══════════════════════════════════════════ */
+.steps{
+  display:flex;justify-content:center;gap:0;
+  max-width:600px;margin:28px auto;
+}
+.step{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 16px;border-radius:4px;
+  font-size:0.85rem;font-weight:700;
+  color:var(--muted);transition:all 0.3s;
+}
+.step.active{color:var(--cyan);text-shadow:0 0 10px var(--cyan);}
+.step.done{color:var(--green);}
+.step-num{
+  width:24px;height:24px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.75rem;font-weight:900;
+  border:2px solid currentColor;
+}
+.step-arrow{color:var(--border);font-size:1.2rem;margin:0 4px;}
+
+/* ═══════════════════════════════════════════
+   MAIN LAYOUT
+═══════════════════════════════════════════ */
+.main{
+  display:grid;grid-template-columns:260px 1fr 300px;
+  gap:20px;max-width:1300px;margin:0 auto;padding:0 20px 40px;
+}
+@media(max-width:1100px){.main{grid-template-columns:1fr;}}
+
+/* ═══════════════════════════════════════════
+   PANELS
+═══════════════════════════════════════════ */
+.panel{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;
+}
+.panel-header{
+  padding:14px 18px;background:var(--bg3);
+  border-bottom:1px solid var(--border);
+  font-weight:700;font-size:0.9rem;letter-spacing:1px;
+  display:flex;align-items:center;gap:8px;
+}
+.panel-header .dot{
+  width:8px;height:8px;border-radius:50%;
+}
+
+/* ═══════════════════════════════════════════
+   UPLOAD ZONE
+═══════════════════════════════════════════ */
+.upload-area{
+  border:2px dashed var(--border);border-radius:12px;
+  padding:48px 24px;text-align:center;cursor:pointer;
+  transition:all 0.3s;position:relative;
+  background:radial-gradient(ellipse at center,rgba(0,245,255,0.03),transparent);
+  margin:20px;
+}
+.upload-area:hover,.upload-area.dragover{
+  border-color:var(--cyan);
+  background:radial-gradient(ellipse at center,rgba(0,245,255,0.08),transparent);
+  box-shadow:var(--glow);
+}
+.upload-icon{font-size:4rem;margin-bottom:16px;display:block;}
+.upload-area h3{font-size:1.2rem;margin-bottom:8px;color:var(--text);}
+.upload-area p{color:var(--muted);font-size:0.9rem;}
+.upload-area input{display:none;}
+.upload-btn{
+  margin-top:20px;padding:10px 28px;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;border-radius:8px;color:#000;
+  font-weight:800;font-size:0.95rem;cursor:pointer;
+  transition:all 0.3s;letter-spacing:0.5px;
+}
+.upload-btn:hover{transform:translateY(-2px);box-shadow:var(--glow);}
+.file-info{
+  margin-top:16px;padding:12px 16px;
+  background:rgba(0,245,255,0.05);border-radius:8px;
+  border:1px solid rgba(0,245,255,0.2);
+  display:none;text-align:left;font-size:0.85rem;
+}
+.file-info.show{display:block;}
+.file-name{color:var(--cyan);font-weight:700;word-break:break-all;}
+.file-size{color:var(--muted);}
+
+/* ═══════════════════════════════════════════
+   PROGRESS
+═══════════════════════════════════════════ */
+.progress-wrap{padding:0 20px 20px;display:none;}
+.progress-wrap.show{display:block;}
+.progress-label{
+  display:flex;justify-content:space-between;
+  font-size:0.8rem;color:var(--muted);margin-bottom:6px;
+}
+.progress-bar{
+  height:6px;background:var(--border);border-radius:3px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;width:0%;border-radius:3px;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  transition:width 0.4s ease;box-shadow:0 0 8px var(--cyan);
+}
+
+/* ═══════════════════════════════════════════
+   CONVERT BUTTON
+═══════════════════════════════════════════ */
+.convert-section{padding:0 20px 20px;display:none;}
+.convert-section.show{display:block;}
+.convert-btn{
+  width:100%;padding:16px;font-size:1.1rem;font-weight:900;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;border-radius:10px;color:#000;cursor:pointer;
+  letter-spacing:1px;transition:all 0.3s;
+  box-shadow:0 4px 20px rgba(0,245,255,0.3);
+}
+.convert-btn:hover:not(:disabled){
+  transform:translateY(-3px);
+  box-shadow:0 8px 30px rgba(0,245,255,0.5);
+}
+.convert-btn:disabled{
+  opacity:0.4;cursor:not-allowed;transform:none;
+}
+
+/* ═══════════════════════════════════════════
+   DOWNLOAD BUTTON
+═══════════════════════════════════════════ */
+.download-section{padding:0 20px 20px;display:none;}
+.download-section.show{display:block;}
+.download-btn{
+  width:100%;padding:16px;font-size:1.1rem;font-weight:900;
+  background:linear-gradient(135deg,var(--green),#00cc66);
+  border:none;border-radius:10px;color:#000;cursor:pointer;
+  letter-spacing:1px;transition:all 0.3s;
+  box-shadow:0 4px 20px rgba(0,255,136,0.3);
+  animation:pulse-green 2s infinite;
+}
+.download-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 30px rgba(0,255,136,0.6);
+}
+@keyframes pulse-green{
+  0%,100%{box-shadow:0 4px 20px rgba(0,255,136,0.3);}
+  50%{box-shadow:0 4px 30px rgba(0,255,136,0.7);}
+}
+
+/* ═══════════════════════════════════════════
+   LEFT PANEL – DETECTED CONTENT
+═══════════════════════════════════════════ */
+.content-list{padding:12px;}
+.content-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;border-radius:8px;
+  margin-bottom:6px;background:var(--bg3);
+  border:1px solid var(--border);transition:all 0.3s;
+}
+.content-item:hover{border-color:var(--purple);transform:translateX(2px);}
+.content-icon{font-size:1.4rem;width:32px;text-align:center;}
+.content-label{flex:1;font-size:0.85rem;font-weight:600;}
+.content-badge{
+  background:var(--purple);color:#fff;
+  padding:2px 10px;border-radius:20px;
+  font-size:0.75rem;font-weight:800;
+  min-width:32px;text-align:center;
+}
+.content-badge.zero{background:var(--border);color:var(--muted);}
+.content-badge.found{background:linear-gradient(135deg,var(--cyan),var(--purple));}
+
+/* ═══════════════════════════════════════════
+   RIGHT PANEL – LOG
+═══════════════════════════════════════════ */
+.log-area{
+  padding:14px;font-family:'Courier New',monospace;
+  font-size:0.78rem;height:420px;overflow-y:auto;
+  background:var(--bg);
+}
+.log-line{margin-bottom:4px;line-height:1.5;animation:fadeIn 0.3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateX(-4px);}to{opacity:1;transform:translateX(0);}}
+.log-info{color:var(--cyan);}
+.log-ok{color:var(--green);}
+.log-warn{color:var(--yellow);}
+.log-err{color:var(--red);}
+.log-dim{color:var(--muted);}
+.log-head{color:var(--purple);font-weight:700;}
+
+/* ═══════════════════════════════════════════
+   OPTIONS PANEL
+═══════════════════════════════════════════ */
+.options{padding:14px;}
+.opt-group{margin-bottom:14px;}
+.opt-label{
+  font-size:0.78rem;color:var(--muted);
+  font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:8px;
+}
+.opt-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 10px;background:var(--bg3);border-radius:6px;
+  margin-bottom:4px;font-size:0.83rem;
+  border:1px solid var(--border);
+}
+.toggle{
+  width:36px;height:20px;background:var(--border);
+  border-radius:10px;cursor:pointer;position:relative;
+  transition:all 0.3s;border:none;outline:none;flex-shrink:0;
+}
+.toggle.on{background:var(--cyan);}
+.toggle::after{
+  content:'';position:absolute;top:2px;left:2px;
+  width:16px;height:16px;border-radius:50%;
+  background:#fff;transition:all 0.3s;
+}
+.toggle.on::after{left:18px;}
+select{
+  background:var(--bg3);color:var(--text);
+  border:1px solid var(--border);border-radius:4px;
+  padding:4px 8px;font-size:0.8rem;cursor:pointer;outline:none;
+}
+select:focus{border-color:var(--cyan);}
+
+/* ═══════════════════════════════════════════
+   STATS ROW
+═══════════════════════════════════════════ */
+.stats-row{
+  display:flex;gap:12px;flex-wrap:wrap;
+  max-width:1300px;margin:0 auto 20px;padding:0 20px;
+}
+.stat-card{
+  flex:1;min-width:140px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:14px;text-align:center;
+  transition:all 0.3s;
+}
+.stat-card:hover{border-color:var(--purple);transform:translateY(-2px);}
+.stat-num{
+  font-size:2rem;font-weight:900;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.stat-name{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
+
+/* ═══════════════════════════════════════════
+   ALERT
+═══════════════════════════════════════════ */
+.alert{
+  margin:0 20px 16px;padding:12px 16px;border-radius:8px;
+  font-size:0.85rem;display:none;
+}
+.alert.show{display:flex;align-items:center;gap:10px;}
+.alert.success{background:rgba(0,255,136,0.1);border:1px solid var(--green);color:var(--green);}
+.alert.error{background:rgba(255,68,102,0.1);border:1px solid var(--red);color:var(--red);}
+.alert.info{background:rgba(0,245,255,0.1);border:1px solid var(--cyan);color:var(--cyan);}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer{
+  text-align:center;padding:24px;color:var(--muted);
+  font-size:0.8rem;border-top:1px solid var(--border);
+  margin-top:40px;
+}
+footer a{color:var(--cyan);text-decoration:none;}
+
+/* ═══════════════════════════════════════════
+   PARTICLES
+═══════════════════════════════════════════ */
+#particles{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;overflow:hidden;
+}
+.particle{
+  position:absolute;width:2px;height:2px;border-radius:50%;
+  background:var(--cyan);opacity:0;
+  animation:float linear infinite;
+}
+@keyframes float{
+  0%{transform:translateY(100vh) translateX(0);opacity:0;}
+  10%{opacity:0.6;}
+  90%{opacity:0.3;}
+  100%{transform:translateY(-20px) translateX(var(--drift));opacity:0;}
+}
+</style>
+</head>
+<body>
+
+<!-- Particles -->
+<div id="particles"></div>
+
+<!-- NAVBAR -->
+<nav style="position:relative;z-index:10;">
+  <div class="logo"><span>⬡</span> Java2Bedrock</div>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <span style="color:var(--muted);font-size:0.8rem;">Bedrock 1.21+</span>
+    <div class="nav-badge">BETA v2.0</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero" style="position:relative;z-index:1;">
+  <h1>☁ Java Mod → Bedrock Add-on</h1>
+  <p>Upload any NeoForge / Fabric / Forge Java mod ZIP and automatically convert it into a fully working <strong>.mcaddon</strong> file for MCPE / Bedrock Edition.</p>
+
+  <!-- STEPS -->
+  <div class="steps">
+    <div class="step active" id="step1"><span class="step-num">1</span>Upload</div>
+    <div class="step-arrow">›</div>
+    <div class="step" id="step2"><span class="step-num">2</span>Parse</div>
+    <div class="step-arrow">›</div>
+    <div class="step" id="step3"><span class="step-num">3</span>Convert</div>
+    <div class="step-arrow">›</div>
+    <div class="step" id="step4"><span class="step-num">4</span>Download</div>
+  </div>
+</div>
+
+<!-- STATS ROW -->
+<div class="stats-row" style="position:relative;z-index:1;">
+  <div class="stat-card"><div class="stat-num" id="st-blocks">0</div><div class="stat-name">Blocks</div></div>
+  <div class="stat-card"><div class="stat-num" id="st-items">0</div><div class="stat-name">Items</div></div>
+  <div class="stat-card"><div class="stat-num" id="st-entities">0</div><div class="stat-name">Entities</div></div>
+  <div class="stat-card"><div class="stat-num" id="st-recipes">0</div><div class="stat-name">Recipes</div></div>
+  <div class="stat-card"><div class="stat-num" id="st-textures">0</div><div class="stat-name">Textures</div></div>
+  <div class="stat-card"><div class="stat-num" id="st-sounds">0</div><div class="stat-name">Sounds</div></div>
+  <div class="stat-card"><div class="stat-num" id="st-files">0</div><div class="stat-name">Total Files</div></div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main" style="position:relative;z-index:1;">
+
+  <!-- LEFT: DETECTED CONTENT -->
+  <div>
+    <div class="panel">
+      <div class="panel-header">
+        <div class="dot" style="background:var(--cyan);box-shadow:0 0 6px var(--cyan);"></div>
+        Detected Content
+      </div>
+      <div class="content-list" id="content-list">
+        <div class="content-item"><span class="content-icon">🧱</span><span class="content-label">Blocks</span><span class="content-badge zero" id="badge-blocks">0</span></div>
+        <div class="content-item"><span class="content-icon">⚔️</span><span class="content-label">Items</span><span class="content-badge zero" id="badge-items">0</span></div>
+        <div class="content-item"><span class="content-icon">👾</span><span class="content-label">Entities</span><span class="content-badge zero" id="badge-entities">0</span></div>
+        <div class="content-item"><span class="content-icon">📜</span><span class="content-label">Recipes</span><span class="content-badge zero" id="badge-recipes">0</span></div>
+        <div class="content-item"><span class="content-icon">🖼️</span><span class="content-label">Textures</span><span class="content-badge zero" id="badge-textures">0</span></div>
+        <div class="content-item"><span class="content-icon">🔊</span><span class="content-label">Sounds</span><span class="content-badge zero" id="badge-sounds">0</span></div>
+        <div class="content-item"><span class="content-icon">🌍</span><span class="content-label">Biomes</span><span class="content-badge zero" id="badge-biomes">0</span></div>
+        <div class="content-item"><span class="content-icon">🌀</span><span class="content-label">Dimensions</span><span class="content-badge zero" id="badge-dims">0</span></div>
+        <div class="content-item"><span class="content-icon">✨</span><span class="content-label">Particles</span><span class="content-badge zero" id="badge-particles">0</span></div>
+        <div class="content-item"><span class="content-icon">🌿</span><span class="content-label">Enchantments</span><span class="content-badge zero" id="badge-enchants">0</span></div>
+        <div class="content-item"><span class="content-icon">🍖</span><span class="content-label">Food Items</span><span class="content-badge zero" id="badge-food">0</span></div>
+        <div class="content-item"><span class="content-icon">🗺️</span><span class="content-label">Loot Tables</span><span class="content-badge zero" id="badge-loot">0</span></div>
+      </div>
+    </div>
+
+    <!-- OPTIONS -->
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header">
+        <div class="dot" style="background:var(--purple);box-shadow:0 0 6px var(--purple);"></div>
+        Conversion Options
+      </div>
+      <div class="options">
+        <div class="opt-group">
+          <div class="opt-label">Include</div>
+          <div class="opt-row"><span>Copy Textures</span><button class="toggle on" onclick="this.classList.toggle('on')" id="opt-tex"></button></div>
+          <div class="opt-row"><span>Copy Sounds</span><button class="toggle on" onclick="this.classList.toggle('on')" id="opt-snd"></button></div>
+          <div class="opt-row"><span>Convert Recipes</span><button class="toggle on" onclick="this.classList.toggle('on')" id="opt-rec"></button></div>
+          <div class="opt-row"><span>Convert Entities</span><button class="toggle on" onclick="this.classList.toggle('on')" id="opt-ent"></button></div>
+          <div class="opt-row"><span>Generate Script</span><button class="toggle on" onclick="this.classList.toggle('on')" id="opt-scr"></button></div>
+          <div class="opt-row"><span>Loot Tables</span><button class="toggle on" onclick="this.classList.toggle('on')" id="opt-loot"></button></div>
+        </div>
+        <div class="opt-group">
+          <div class="opt-label">Bedrock Version</div>
+          <div class="opt-row">
+            <span>Target</span>
+            <select id="opt-ver">
+              <option value="1.21.0">1.21.0</option>
+              <option value="1.20.80">1.20.80</option>
+              <option value="1.20.0">1.20.0</option>
+            </select>
+          </div>
+        </div>
+        <div class="opt-group">
+          <div class="opt-label">Namespace</div>
+          <div class="opt-row">
+            <span>Pack ID</span>
+            <input id="opt-ns" type="text" value="mymod" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:0.8rem;width:90px;outline:none;"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER: UPLOAD + CONVERT -->
+  <div>
+    <div class="panel">
+      <div class="panel-header">
+        <div class="dot" style="background:var(--green);box-shadow:0 0 6px var(--green);"></div>
+        Upload Java Mod
+      </div>
+
+      <div class="upload-area" id="dropzone" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" accept=".zip,.jar" onchange="handleFile(this.files[0])"/>
+        <span class="upload-icon">📦</span>
+        <h3>Drop your Java Mod here</h3>
+        <p>Supports .jar and .zip — NeoForge, Forge, Fabric</p>
+        <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('fileInput').click()">Browse File</button>
+        <div class="file-info" id="file-info">
+          <div class="file-name" id="file-name">—</div>
+          <div class="file-size" id="file-size">—</div>
+        </div>
+      </div>
+
+      <div class="alert" id="alert-box">
+        <span id="alert-icon">✓</span>
+        <span id="alert-msg"></span>
+      </div>
+
+      <div class="progress-wrap" id="progress-wrap">
+        <div class="progress-label">
+          <span id="progress-text">Initializing...</span>
+          <span id="progress-pct">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      </div>
+
+      <div class="convert-section" id="convert-section">
+        <button class="convert-btn" id="convert-btn" onclick="startConversion()">
+          ⚡ CONVERT TO MCADDON
+        </button>
+      </div>
+
+      <div class="download-section" id="download-section">
+        <button class="download-btn" id="download-btn" onclick="downloadAddon()">
+          ⬇ DOWNLOAD .mcaddon
+        </button>
+      </div>
+    </div>
+
+    <!-- CONVERSION SUMMARY -->
+    <div class="panel" id="summary-panel" style="margin-top:16px;display:none;">
+      <div class="panel-header">
+        <div class="dot" style="background:var(--green);box-shadow:0 0 6px var(--green);"></div>
+        Conversion Summary
+      </div>
+      <div id="summary-content" style="padding:16px;font-size:0.85rem;"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: LOG -->
+  <div>
+    <div class="panel">
+      <div class="panel-header">
+        <div class="dot" style="background:var(--yellow);box-shadow:0 0 6px var(--yellow);"></div>
+        Conversion Log
+        <button onclick="clearLog()" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--muted);padding:2px 8px;border-radius:4px;cursor:pointer;font-size:0.7rem;">CLEAR</button>
+      </div>
+      <div class="log-area" id="log-area">
+        <div class="log-dim">[ Java2Bedrock v2.0 ready ]</div>
+        <div class="log-dim">[ Upload a mod file to begin... ]</div>
+      </div>
+    </div>
+
+    <!-- FILE TREE PREVIEW -->
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header">
+        <div class="dot" style="background:var(--orange);box-shadow:0 0 6px var(--orange);"></div>
+        Output Structure
+      </div>
+      <div id="file-tree" style="padding:12px;font-family:'Courier New',monospace;font-size:0.75rem;color:var(--muted);max-height:300px;overflow-y:auto;">
+        <div style="color:var(--border);">[ No mod loaded ]</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Java2Bedrock — Minecraft Mod Converter &nbsp;|&nbsp; Not affiliated with Mojang / Microsoft &nbsp;|&nbsp;
+  <a href="#">GitHub</a> &nbsp;|&nbsp; <a href="#">Docs</a></p>
+  <p style="margin-top:6px;">⚠ Conversion accuracy varies by mod complexity. Always review output before use.</p>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT — FULL CONVERSION ENGINE
+═══════════════════════════════════════════════════════ -->
+<script>
+// ─── CDN: JSZip ───────────────────────────────────────
+(function(){
